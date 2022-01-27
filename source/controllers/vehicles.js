@@ -39,7 +39,7 @@ exports.postVehicle = (req,res) =>{
   vehicleModel.postVehicle(data, results =>{
     return res.json({
       success : true,
-      messages : 'Input vehicle success!',
+      messages : 'Input data success!',
       results : results
     })
   })
@@ -57,7 +57,7 @@ exports.patchVehicle = (req,res) =>{
   vehicleModel.patchVehicle(data, id, results =>{
     return res.json({
       success : true,
-      messages : 'Input vehicle success!',
+      messages : 'Data updated success!',
       results : results
     })
   })

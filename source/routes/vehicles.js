@@ -5,7 +5,7 @@ const {getVehicles, getVehicle, postVehicle, patchVehicle, deleteVehicle} = requ
 vehicles.get('/', getVehicles)
 vehicles.get('/:id', getVehicle)
 vehicles.post('/in', postVehicle)
-// vehicles.patch('/:id', patchVehicle)
+vehicles.patch('/:id', patchVehicle)
 vehicles.delete('/:id', deleteVehicle)
 
 
