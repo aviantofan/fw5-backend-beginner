@@ -31,7 +31,7 @@ exports.getVehicle = (req, res) => {
 exports.postVehicle = (req,res) =>{
   const vehicle = []
   data = {
-    merk : req.body.merk,
+    merk   : req.body.merk,
     tipe : req.body.tipe,
     harga : req.body.harga
   }
@@ -66,10 +66,26 @@ exports.patchVehicle = (req,res) =>{
 
 exports.deleteVehicle = (req, res) => {
   const {id} = req.params
-  vehicleModel.deleteVehicle(id, results => {
-    return res.json({
-      success: true,
-      message: 'Deleted data successfully',
-    })
-  })
+  vehicleModel.getVehicle(id, (results => {
+    if (results.length > 0) {
+      vehicleModel.deleteVehicle(id,(results => {
+        if(results.affectedRows == 1){
+          return res.send({
+            success : true,
+            message : 'Data deleted success!'
+          })
+        }else{
+          return res.status(500).send({
+            success : false,
+            message : 'Data delete failed!'
+          })
+        }
+      }))
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: 'Vehicle not found'
+      })
+    }
+  }))
 }
