@@ -1,12 +1,19 @@
-const userModel = require('../models/vehicles');
+const userModel = require('../models/users');
 
 exports.getUsers = (req, res) => {
     userModel.getUsers(results => {
-        return res.json({
-            success: true,
-            message: 'List Users',
-            results: results
-        });
+        if (results.length > 0) {
+            return res.json({
+                success: true,
+                message: 'List Users',
+                results: results
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
     });
 };
 
@@ -53,7 +60,7 @@ exports.postUser = (req,res) =>{
     }));
 };
 
-exports.patchVehicle = (req,res) =>{
+exports.patchUser = (req,res) =>{
     const user = [];
     const data = {
         nameUser   : req.body.nameUser,
