@@ -11,7 +11,7 @@ exports.getUsers = (req, res) => {
         } else {
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: 'Users list not found'
             });
         }
     });
