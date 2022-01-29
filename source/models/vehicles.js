@@ -1,21 +1,21 @@
 const db = require('../helpers/db');
 
 exports.getVehicles = (cb) => {
-    db.query('SELECT * FROM vehicle', (err, res) => {
+    db.query('SELECT * FROM vehicles', (err, res) => {
         if (err) throw err;
         cb(res);
     });
 };
 
 exports.getVehicle = (id, cb) => {
-    db.query('SELECT * FROM vehicle WHERE id=?', [id], (err, res) => {
+    db.query('SELECT * FROM vehicles WHERE id=?', [id], (err, res) => {
         if (err) throw err;
         cb(res);
     });
 };
 
 exports.postVehicle = (data, cb) =>{
-    db.query('INSERT INTO vehicle SET ?', data, (err, res) => {
+    db.query('INSERT INTO vehicles SET ?', data, (err, res) => {
         if(err) throw err;
         cb(res);
     });
@@ -23,7 +23,7 @@ exports.postVehicle = (data, cb) =>{
 };
 
 exports.patchVehicle = (data, id, cb) => {
-    db.query('UPDATE vehicle SET ? WHERE id=?', [data, id], (err, res) => {
+    db.query('UPDATE vehicles SET ? WHERE id=?', [data, id], (err, res) => {
         if (err) throw err;
         cb(res);
     });
@@ -31,7 +31,7 @@ exports.patchVehicle = (data, id, cb) => {
 };
 
 exports.deleteVehicle = (id, cb) => {
-    db.query('DELETE FROM vehicle WHERE id = ?',[id], (err, res)=>{
+    db.query('DELETE FROM vehicles WHERE id = ?',[id], (err, res)=>{
         if(err) throw err;
         cb(res);
     });
