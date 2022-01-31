@@ -38,16 +38,16 @@ exports.getVehicle = (req, res) => {
 exports.postVehicle = (req,res) =>{
     const vehicle = [];
     const data = {
-        nameVehicle   : req.body.nameVehicle,
-        colorVehicle : req.body.colorVehicle,
-        locVehicle : req.body.locVehicle,
+        name   : req.body.name,
+        color : req.body.color,
+        loc : req.body.loc,
         isAvailable : req.body.isAvailable,
         isRepay : req.body.isRepay,
-        capacityVehicle : req.body.capacityVehicle,
-        typeVehicle : req.body.typeVehicle,
+        capacity : req.body.capacity,
+        type : req.body.typeVehicle,
         timeReserved : req.body.timeReserved,
-        priceVehicle : req.body.priceVehicle,
-        quantityVehicle : req.body.quantityVehicle
+        price : req.body.price,
+        quantity : req.body.quantity
     };
     vehicle.push(data);
     vehicleModel.postVehicle(data, (results =>{
@@ -55,6 +55,7 @@ exports.postVehicle = (req,res) =>{
             return res.send({
                 success : true,
                 messages : 'Input data vehicle success!',
+                results : results
             });
         }else{
             return res.status(500).send({
@@ -68,16 +69,16 @@ exports.postVehicle = (req,res) =>{
 exports.patchVehicle = (req,res) =>{
     const vehicle = [];
     const data = {
-        nameVehicle   : req.body.nameVehicle,
-        colorVehicle : req.body.colorVehicle,
-        locVehicle : req.body.locVehicle,
+        name   : req.body.name,
+        color : req.body.color,
+        loc : req.body.loc,
         isAvailable : req.body.isAvailable,
         isRepay : req.body.isRepay,
-        capacityVehicle : req.body.capacityVehicle,
-        typeVehicle : req.body.typeVehicle,
+        capacity : req.body.capacity,
+        type : req.body.typeVehicle,
         timeReserved : req.body.timeReserved,
-        priceVehicle : req.body.priceVehicle,
-        quantityVehicle : req.body.quantityVehicle
+        price : req.body.price,
+        quantity : req.body.quantity
     };
     vehicle.push(data);
     const {id} = req.params;
@@ -88,6 +89,7 @@ exports.patchVehicle = (req,res) =>{
                     return res.send({
                         success : true,
                         messages : 'Data vehicle updated success!',
+                        results : results
                     });
                 }else{
                     return res.status(500).send({
