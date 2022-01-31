@@ -67,30 +67,30 @@ exports.postVehicle = (req,res) =>{
 };
 
 exports.patchVehicle = (req,res) =>{
-    const vehicle = [];
     const data = {
         name   : req.body.name,
         color : req.body.color,
         loc : req.body.loc,
         isAvailable : req.body.isAvailable,
-        isRepay : req.body.isRepay,
+        isPrepay : req.body.isPrepay,
         capacity : req.body.capacity,
-        type : req.body.typeVehicle,
-        timeReserved : req.body.timeReserved,
+        type : req.body.type,
+        reservationBefore : req.body.reservationBefore,
         price : req.body.price,
-        quantity : req.body.quantity
+        qty : req.body.qty
     };
-    vehicle.push(data);
     const {id} = req.params;
     vehicleModel.getVehicle(id, (results =>{
         if (results.length > 0){
             vehicleModel.patchVehicle(data, id, (results =>{
                 if(results.affectedRows == 1){
-                    return res.send({
-                        success : true,
-                        messages : 'Data vehicle updated success!',
-                        results : results
-                    });
+                    vehicleModel.getVehicle(id, (results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Updated data vehicle success!',
+                            results : results[0]
+                        });
+                    }));
                 }else{
                     return res.status(500).send({
                         success : false,
