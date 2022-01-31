@@ -48,8 +48,7 @@ exports.postVehicle = (req,res) =>{
         price : req.body.price,
         qty : req.body.qty
     };
-    const { search } = req.query;
-    vehicleModel.getVehicleCek(search, results =>{
+    vehicleModel.getVehicleCheck(data, results =>{
         if (results.length < 1){
             vehicleModel.postVehicle(data, (results =>{
                 if(results.affectedRows == 1){ 

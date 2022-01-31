@@ -14,11 +14,12 @@ exports.getVehicle = (id, cb) => {
     });
 };
 
-exports.getVehicleCek = (search = '',cb) => {
-    db.query(`SELECT name FROM vehicles WHERE name LIKE '%${search}%' `, (err, res) => {
+exports.getVehicleCheck = (data,cb) => {
+    db.query('SELECT name FROM vehicles WHERE name = ?', [data.name], (err, res) => {
         if(err) throw err;
         cb(res);
     });
+    return(db);
 };
 
 exports.postVehicle = (data, cb) =>{
