@@ -36,28 +36,25 @@ exports.getVehicle = (req, res) => {
 };
 
 exports.postVehicle = (req,res) =>{
-    const vehicle = [];
-    const {id} = req.params;
     const data = {
         name   : req.body.name,
         color : req.body.color,
         loc : req.body.loc,
         isAvailable : req.body.isAvailable,
-        isPrepay : req.body.isRepay,
+        isPrepay : req.body.isPrepay,
         capacity : req.body.capacity,
-        type : req.body.typeVehicle,
+        type : req.body.type,
         reservationBefore : req.body.reservationBefore,
         price : req.body.price,
-        qty : req.body.quantity
+        qty : req.body.qty
     };
-    vehicle.push(data);
     vehicleModel.postVehicle(data, (results =>{
-        if(results.affectedRows == 1){
-            vehicleModel.getVehicle(id, results => {
+        if(results.affectedRows == 1){ 
+            vehicleModel.getVehicles(results => {
                 return res.send({
                     success : true,
                     messages : 'Input data vehicle success!',
-                    results : results[0]
+                    results : results
                 });
             });
         }else{
