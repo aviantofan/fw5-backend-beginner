@@ -14,6 +14,13 @@ exports.getVehicle = (id, cb) => {
     });
 };
 
+exports.getVehicleCek = (search = '',cb) => {
+    db.query(`SELECT name FROM vehicles WHERE name LIKE '%${search}%' `, (err, res) => {
+        if(err) throw err;
+        cb(res);
+    });
+};
+
 exports.postVehicle = (data, cb) =>{
     db.query('INSERT INTO vehicles SET ?', data, (err, res) => {
         if(err) throw err;

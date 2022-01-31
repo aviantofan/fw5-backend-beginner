@@ -48,22 +48,32 @@ exports.postVehicle = (req,res) =>{
         price : req.body.price,
         qty : req.body.qty
     };
-    vehicleModel.postVehicle(data, (results =>{
-        if(results.affectedRows == 1){ 
-            vehicleModel.getVehicles(results => {
-                return res.send({
-                    success : true,
-                    messages : 'Input data vehicle success!',
-                    results : results
-                });
-            });
+    const { search } = req.query;
+    vehicleModel.getVehicleCek(search, results =>{
+        if (results.length < 1){
+            vehicleModel.postVehicle(data, (results =>{
+                if(results.affectedRows == 1){ 
+                    vehicleModel.getVehicles(results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Input data vehicle success!',
+                            results : results
+                        });
+                    });
+                }else{
+                    return res.status(500).send({
+                        success : false,
+                        message : 'Input data vehicle failed!'
+                    });
+                }
+            }));
         }else{
-            return res.status(500).send({
+            return res.status(400).send({
                 success : false,
-                message : 'Input data vehicle failed!'
+                message : 'Data has already inserted!'
             });
         }
-    }));
+    });
 };
 
 exports.patchVehicle = (req,res) =>{
@@ -106,7 +116,6 @@ exports.patchVehicle = (req,res) =>{
         }
     }));
 };
-
 
 exports.deleteVehicle = (req, res) => {
     const {id} = req.params;
