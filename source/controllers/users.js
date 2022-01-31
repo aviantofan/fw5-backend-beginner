@@ -38,11 +38,11 @@ exports.getUser = (req, res) => {
 exports.postUser = (req,res) =>{
     const user = [];
     const data = {
-        nameUser   : req.body.nameUser,
-        emailUser : req.body.emailUser,
-        genderUser : req.body.genderUser,
-        addressUser : req.body.addressUser,
-        birthDate : req.body.birthDate
+        name   : req.body.name,
+        email : req.body.email,
+        gender : req.body.gender,
+        address : req.body.address,
+        birthdate : req.body.birthdate
     };
     user.push(data);
     userModel.postUser(data, (results =>{
@@ -63,11 +63,11 @@ exports.postUser = (req,res) =>{
 exports.patchUser = (req,res) =>{
     const user = [];
     const data = {
-        nameUser   : req.body.nameUser,
-        emailUser : req.body.emailUser,
-        genderUser : req.body.genderUser,
-        addressUser : req.body.addressUser,
-        birthDate : req.body.birthDate
+        name   : req.body.name,
+        email : req.body.email,
+        gender : req.body.gender,
+        address : req.body.address,
+        birthdate : req.body.birthdate
     };
     user.push(data);
     const {id} = req.params;

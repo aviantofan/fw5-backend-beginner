@@ -37,25 +37,28 @@ exports.getVehicle = (req, res) => {
 
 exports.postVehicle = (req,res) =>{
     const vehicle = [];
+    const {id} = req.params;
     const data = {
         name   : req.body.name,
         color : req.body.color,
         loc : req.body.loc,
         isAvailable : req.body.isAvailable,
-        isRepay : req.body.isRepay,
+        isPrepay : req.body.isRepay,
         capacity : req.body.capacity,
         type : req.body.typeVehicle,
-        timeReserved : req.body.timeReserved,
+        reservationBefore : req.body.reservationBefore,
         price : req.body.price,
-        quantity : req.body.quantity
+        qty : req.body.quantity
     };
     vehicle.push(data);
     vehicleModel.postVehicle(data, (results =>{
         if(results.affectedRows == 1){
-            return res.send({
-                success : true,
-                messages : 'Input data vehicle success!',
-                results : results
+            vehicleModel.getVehicle(id, results => {
+                return res.send({
+                    success : true,
+                    messages : 'Input data vehicle success!',
+                    results : results[0]
+                });
             });
         }else{
             return res.status(500).send({
