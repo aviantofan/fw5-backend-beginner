@@ -43,7 +43,7 @@ exports.postVehicle = (req,res) =>{
         isAvailable : req.body.isAvailable,
         isPrepay : req.body.isPrepay,
         capacity : req.body.capacity,
-        type : req.body.type,
+        category_id : req.body.category_id,
         reservationBefore : req.body.reservationBefore,
         price : req.body.price,
         qty : req.body.qty
@@ -83,7 +83,7 @@ exports.patchVehicle = (req,res) =>{
         isAvailable : req.body.isAvailable,
         isPrepay : req.body.isPrepay,
         capacity : req.body.capacity,
-        type : req.body.type,
+        category_id : req.body.category_id,
         reservationBefore : req.body.reservationBefore,
         price : req.body.price,
         qty : req.body.qty
