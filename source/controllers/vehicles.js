@@ -1,5 +1,22 @@
 const vehicleModel = require('../models/vehicles');
 
+exports.getVehicles = (req, res) => {
+    vehicleModel.getVehicles(results => {
+        if (results.length > 0) {
+            return res.json({
+                success: true,
+                message: 'List Vehicles',
+                results: results
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: 'Vehicles list not found'
+            });
+        }
+    });
+};
+
 exports.getVehicle = (req, res) => {
     const {id} = req.params;
     vehicleModel.getVehicle(id, results => {
@@ -35,7 +52,7 @@ exports.postVehicle = (req,res) =>{
         if (results.length < 1){
             vehicleModel.postVehicle(data, (results =>{
                 if(results.affectedRows == 1){ 
-                    vehicleModel.getVehicles(results => {
+                    vehicleModel.getVehicle(results => {
                         return res.send({
                             success : true,
                             messages : 'Input data vehicle success!',

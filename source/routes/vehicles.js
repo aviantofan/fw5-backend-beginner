@@ -1,7 +1,8 @@
 const vehicles = require('express').Router();
 
-const {getVehicle, postVehicle, patchVehicle, deleteVehicle} = require('../controllers/vehicles');
+const {getVehicles, getVehicle, postVehicle, patchVehicle, deleteVehicle} = require('../controllers/vehicles');
 
+vehicles.get('/', getVehicles);
 vehicles.get('/:id', getVehicle);
 vehicles.post('/', postVehicle);
 vehicles.patch('/:id', patchVehicle);
