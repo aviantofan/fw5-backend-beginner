@@ -77,10 +77,13 @@ exports.patchCategory = (req,res) =>{
         if (results.length > 0){
             categoryModel.patchCategory(data, id, (results =>{
                 if(results.affectedRows == 1){
-                    return res.send({
-                        success : true,
-                        messages : 'Data category updated success!',
-                    });
+                    categoryModel.getCategory(id, (results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Updated data category success!',
+                            results : results[0]
+                        });
+                    }));
                 }else{
                     return res.status(500).send({
                         success : false,
@@ -91,7 +94,7 @@ exports.patchCategory = (req,res) =>{
         }else{
             return res.status(404).json({
                 success: false,
-                message: 'category not found'
+                message: 'Category not found'
             });
         }
     }));

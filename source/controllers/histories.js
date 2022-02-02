@@ -11,7 +11,7 @@ exports.getHistories = (req, res) => {
         } else {
             return res.status(404).json({
                 success: false,
-                message: 'Users list not found'
+                message: 'History list not found'
             });
         }
     });
@@ -29,7 +29,7 @@ exports.getHistory = (req, res) => {
         } else {
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: 'History not found'
             });
         }
     });
@@ -40,25 +40,37 @@ exports.postHistory = (req,res) =>{
     const data = {
         user_id : req.body.user_id,
         vehicle_id : req.body.vehicle_id,
-        rentStartDate : req.body.startDate,
-        rentEndDate : req.body.endDate,
+        rentStartDate : req.body.rentStartDate,
+        rentEndDate : req.body.rentEndDate,
         prepayment : req.body.prepayment,
         isReturned : req.body.isReturned
     };
     history.push(data);
-    historyModel.postHistory(data, (results =>{
-        if(results.affectedRows == 1){
-            return res.send({
-                success : true,
-                messages : 'Input data history success!',
-            });
+    historyModel.getHistoryCheck(data, results =>{
+        if (results.length < 1){
+            historyModel.postHistory(data, (results =>{
+                if(results.affectedRows == 1){ 
+                    historyModel.getHistories(results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Input data history success!',
+                            results : results
+                        });
+                    });
+                }else{
+                    return res.status(500).send({
+                        success : false,
+                        message : 'Input data history failed!'
+                    });
+                }
+            }));
         }else{
-            return res.status(500).send({
+            return res.status(400).send({
                 success : false,
-                message : 'Input data history failed!'
+                message : 'Data has already inserted!'
             });
         }
-    }));
+    });
 };
 
 exports.patchHistory = (req,res) =>{
@@ -66,8 +78,8 @@ exports.patchHistory = (req,res) =>{
     const data = {
         user_id : req.body.user_id,
         vehicle_id : req.body.vehicle_id,
-        rentStartDate : req.body.startDate,
-        rentEndDate : req.body.endDate,
+        rentStartDate : req.body.rentStartDate,
+        rentEndDate : req.body.rentEndDate,
         prepayment : req.body.prepayment,
         isReturned : req.body.isReturned
     };
@@ -77,21 +89,24 @@ exports.patchHistory = (req,res) =>{
         if (results.length > 0){
             historyModel.patchHistory(data, id, (results =>{
                 if(results.affectedRows == 1){
-                    return res.send({
-                        success : true,
-                        messages : 'Data user updated success!',
-                    });
+                    historyModel.getHistory(id, (results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Updated data history success!',
+                            results : results[0]
+                        });
+                    }));
                 }else{
                     return res.status(500).send({
                         success : false,
-                        message : 'Data user updated failed!'
+                        message : 'Data history updated failed!'
                     });
                 }
             }));
         }else{
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: 'History not found'
             });
         }
     }));
@@ -118,7 +133,7 @@ exports.deleteHistory = (req, res) => {
         } else {
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: 'History not found'
             });
         }
     }));

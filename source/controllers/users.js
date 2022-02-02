@@ -83,10 +83,13 @@ exports.patchUser = (req,res) =>{
         if (results.length > 0){
             userModel.patchUser(data, id, (results =>{
                 if(results.affectedRows == 1){
-                    return res.send({
-                        success : true,
-                        messages : 'Data user updated success!',
-                    });
+                    userModel.getUser(id, (results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Updated data user success!',
+                            results : results[0]
+                        });
+                    }));
                 }else{
                     return res.status(500).send({
                         success : false,
@@ -97,7 +100,7 @@ exports.patchUser = (req,res) =>{
         }else{
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: 'user not found'
             });
         }
     }));

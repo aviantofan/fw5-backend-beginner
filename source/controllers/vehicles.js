@@ -52,7 +52,7 @@ exports.postVehicle = (req,res) =>{
         if (results.length < 1){
             vehicleModel.postVehicle(data, (results =>{
                 if(results.affectedRows == 1){ 
-                    vehicleModel.getVehicle(results => {
+                    vehicleModel.getVehicles(results => {
                         return res.send({
                             success : true,
                             messages : 'Input data vehicle success!',
