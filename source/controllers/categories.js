@@ -36,22 +36,33 @@ exports.getCategory = (req, res) => {
 };
 
 exports.postCategory = (req,res) =>{
-    const data = {
-        name : req.body.name
-    };
-    categoryModel.postCategory(data, (results =>{
-        if(results.affectedRows == 1){
-            return res.send({
-                success : true,
-                messages : 'Input data category success!',
-            });
+    const  {name} = req.body.name;
+
+    categoryModel.getCategoryCheck(name, results =>{
+        if (results.length < 1){
+            categoryModel.postCategory(name, (results =>{
+                if(results.affectedRows == 1){ 
+                    categoryModel.getCategory(results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Input data category success!',
+                            results : results
+                        });
+                    });
+                }else{
+                    return res.status(500).send({
+                        success : false,
+                        message : 'Input data category failed!'
+                    });
+                }
+            }));
         }else{
-            return res.status(500).send({
+            return res.status(400).send({
                 success : false,
-                message : 'Input data category failed!'
+                message : 'Data has already inserted!'
             });
         }
-    }));
+    });
 };
 
 exports.patchCategory = (req,res) =>{

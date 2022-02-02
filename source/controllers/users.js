@@ -43,19 +43,31 @@ exports.postUser = (req,res) =>{
         address : req.body.address,
         birthdate : req.body.birthdate
     };
-    userModel.postUser(data, (results =>{
-        if(results.affectedRows == 1){
-            return res.send({
-                success : true,
-                messages : 'Input data user success!',
-            });
+    userModel.getUserCheck(data, results =>{
+        if (results.length < 1){
+            userModel.postUser(data, (results =>{
+                if(results.affectedRows == 1){ 
+                    userModel.getUsers(results => {
+                        return res.send({
+                            success : true,
+                            messages : 'Input data user success!',
+                            results : results
+                        });
+                    });
+                }else{
+                    return res.status(500).send({
+                        success : false,
+                        message : 'Input data user failed!'
+                    });
+                }
+            }));
         }else{
-            return res.status(500).send({
+            return res.status(400).send({
                 success : false,
-                message : 'Input data user failed!'
+                message : 'Data has already inserted!'
             });
         }
-    }));
+    });
 };
 
 exports.patchUser = (req,res) =>{
