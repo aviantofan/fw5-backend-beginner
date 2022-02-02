@@ -46,31 +46,22 @@ exports.postHistory = (req,res) =>{
         isReturned : req.body.isReturned
     };
     history.push(data);
-    historyModel.getHistoryCheck(data, results =>{
-        if (results.length < 1){
-            historyModel.postHistory(data, (results =>{
-                if(results.affectedRows == 1){ 
-                    historyModel.getHistories(results => {
-                        return res.send({
-                            success : true,
-                            messages : 'Input data history success!',
-                            results : results
-                        });
-                    });
-                }else{
-                    return res.status(500).send({
-                        success : false,
-                        message : 'Input data history failed!'
-                    });
-                }
-            }));
+    historyModel.postHistory(data, (results =>{
+        if(results.affectedRows == 1){ 
+            historyModel.getHistories(results => {
+                return res.send({
+                    success : true,
+                    messages : 'Input data history success!',
+                    results : results
+                });
+            });
         }else{
-            return res.status(400).send({
+            return res.status(500).send({
                 success : false,
-                message : 'Data has already inserted!'
+                message : 'Input data history failed!'
             });
         }
-    });
+    }));
 };
 
 exports.patchHistory = (req,res) =>{
