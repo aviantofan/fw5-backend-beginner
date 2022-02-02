@@ -4,7 +4,7 @@ const {getHistories, getHistory, postHistory, patchHistory, deleteHistory} = req
 
 histories.get('/', getHistories);
 histories.get('/:id', getHistory);
-histories.post('/in', postHistory);
+histories.post('/', postHistory);
 histories.patch('/:id', patchHistory);
 histories.delete('/:id', deleteHistory);
 

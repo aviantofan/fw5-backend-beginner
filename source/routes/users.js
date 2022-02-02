@@ -4,7 +4,7 @@ const {getUsers, getUser, postUser, patchUser, deleteUser} = require('../control
 
 users.get('/', getUsers);
 users.get('/:id', getUser);
-users.post('/in', postUser);
+users.post('/', postUser);
 users.patch('/:id', patchUser);
 users.delete('/:id', deleteUser);
 
