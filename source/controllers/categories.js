@@ -36,13 +36,14 @@ exports.getCategory = (req, res) => {
 };
 
 exports.postCategory = (req,res) =>{
-    const  {name} = req.body.name;
-
-    categoryModel.getCategoryCheck(name, results =>{
+    const data= {
+        name : req.body.name
+    };
+    categoryModel.getCategoryCheck(data, results =>{
         if (results.length < 1){
-            categoryModel.postCategory(name, (results =>{
+            categoryModel.postCategory(data, (results =>{
                 if(results.affectedRows == 1){ 
-                    categoryModel.getCategory(results => {
+                    categoryModel.getCategories(results => {
                         return res.send({
                             success : true,
                             messages : 'Input data category success!',

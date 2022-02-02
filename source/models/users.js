@@ -14,6 +14,14 @@ exports.getUser = (id, cb) => {
     });
 };
 
+exports.getUserCheck = (data,cb) => {
+    db.query('SELECT name FROM users WHERE name = ?', [data.name], (err, res) => {
+        if(err) throw err;
+        cb(res);
+    });
+    return(db);
+};
+
 exports.postUser = (data, cb) =>{
     db.query('INSERT INTO users SET ?', data, (err, res) => {
         if(err) throw err;

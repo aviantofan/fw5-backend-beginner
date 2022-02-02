@@ -14,8 +14,16 @@ exports.getCategory = (id, cb) => {
     });
 };
 
+exports.getCategoryCheck = (data,cb) => {
+    db.query('SELECT name FROM categories WHERE name = ?', [data.name], (err, res) => {
+        if(err) throw err;
+        cb(res);
+    });
+    return(db);
+};
+
 exports.postCategory = (data, cb) =>{
-    db.query('INSERT INTO categories SET ?', data, (err, res) => {
+    db.query('INSERT INTO categories SET ?', [data], (err, res) => {
         if(err) throw err;
         cb(res);
     });
