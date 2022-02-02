@@ -36,7 +36,6 @@ exports.getUser = (req, res) => {
 };
 
 exports.postUser = (req,res) =>{
-    const user = [];
     const data = {
         name   : req.body.name,
         email : req.body.email,
@@ -44,7 +43,6 @@ exports.postUser = (req,res) =>{
         address : req.body.address,
         birthdate : req.body.birthdate
     };
-    user.push(data);
     userModel.postUser(data, (results =>{
         if(results.affectedRows == 1){
             return res.send({
@@ -61,7 +59,6 @@ exports.postUser = (req,res) =>{
 };
 
 exports.patchUser = (req,res) =>{
-    const user = [];
     const data = {
         name   : req.body.name,
         email : req.body.email,
@@ -69,7 +66,6 @@ exports.patchUser = (req,res) =>{
         address : req.body.address,
         birthdate : req.body.birthdate
     };
-    user.push(data);
     const {id} = req.params;
     userModel.getUser(id, (results =>{
         if (results.length > 0){

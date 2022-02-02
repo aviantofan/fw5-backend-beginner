@@ -38,7 +38,9 @@ exports.getHistory = (req, res) => {
 exports.postHistory = (req,res) =>{
     const history = [];
     const data = {
-        rentStartDate   : req.body.startDate,
+        user_id : req.body.user_id,
+        vehicle_id : req.body.vehicle_id,
+        rentStartDate : req.body.startDate,
         rentEndDate : req.body.endDate,
         prepayment : req.body.prepayment,
         isReturned : req.body.isReturned
@@ -62,8 +64,10 @@ exports.postHistory = (req,res) =>{
 exports.patchHistory = (req,res) =>{
     const history = [];
     const data = {
-        tglPemesanan   : req.body.tglPemesanan,
-        tglPengembalian : req.body.tglPengembalian,
+        user_id : req.body.user_id,
+        vehicle_id : req.body.vehicle_id,
+        rentStartDate : req.body.startDate,
+        rentEndDate : req.body.endDate,
         prepayment : req.body.prepayment,
         isReturned : req.body.isReturned
     };
