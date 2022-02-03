@@ -17,6 +17,23 @@ exports.getVehicles = (req, res) => {
     });
 };
 
+exports.getVehiclesCategory = (req, res) => {
+    vehicleModel.getVehiclesCategory(results => {
+        if (results.length > 0) {
+            return res.json({
+                success: true,
+                message: 'List Vehicles Category',
+                results: results
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: 'Vehicles Category list not found'
+            });
+        }
+    });
+};
+
 exports.getVehicle = (req, res) => {
     const {id} = req.params;
     vehicleModel.getVehicle(id, results => {

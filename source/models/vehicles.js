@@ -14,6 +14,13 @@ exports.getVehicle = (id, cb) => {
     });
 };
 
+exports.getVehiclesCategory = (cb) => {
+    db.query('SELECT v.name, c.name AS categoryName FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id', (err, res) => {
+        if (err) throw err;
+        cb(res);
+    });
+};
+
 exports.getVehicleCheck = (data,cb) => {
     db.query('SELECT name FROM vehicles WHERE name = ?', [data.name], (err, res) => {
         if(err) throw err;
