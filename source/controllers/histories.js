@@ -36,7 +36,6 @@ exports.getHistory = (req, res) => {
 };
 
 exports.postHistory = (req,res) =>{
-    const history = [];
     const data = {
         user_id : req.body.user_id,
         vehicle_id : req.body.vehicle_id,
@@ -45,7 +44,6 @@ exports.postHistory = (req,res) =>{
         prepayment : req.body.prepayment,
         isReturned : req.body.isReturned
     };
-    history.push(data);
     historyModel.postHistory(data, (results =>{
         if(results.affectedRows == 1){ 
             historyModel.getHistories(results => {
@@ -65,7 +63,6 @@ exports.postHistory = (req,res) =>{
 };
 
 exports.patchHistory = (req,res) =>{
-    const history = [];
     const data = {
         user_id : req.body.user_id,
         vehicle_id : req.body.vehicle_id,
@@ -74,7 +71,6 @@ exports.patchHistory = (req,res) =>{
         prepayment : req.body.prepayment,
         isReturned : req.body.isReturned
     };
-    history.push(data);
     const {id} = req.params;
     historyModel.getHistory(id, (results =>{
         if (results.length > 0){

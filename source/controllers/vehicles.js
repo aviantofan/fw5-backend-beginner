@@ -36,6 +36,27 @@ exports.getVehicle = (req, res) => {
 };
 
 exports.postVehicle = (req,res) =>{
+    const capacity = parseInt(req.body.price) || null;
+    const price = parseInt(req.body.price) || null;
+    const qty = parseInt(req.body.qty);
+    if (!capacity){
+        return res.status(400).send({
+            success : false,
+            message : 'Capacity must be a Number!'
+        });
+    }
+    if (!price){
+        return res.status(400).send({
+            success : false,
+            message : 'Price must be a NUMBER!'
+        });
+    }
+    if (!qty){
+        return res.status(400).send({
+            success : false,
+            message : 'Quantity must be a NUMBER!'
+        });
+    }
     const data = {
         name   : req.body.name,
         color : req.body.color,
