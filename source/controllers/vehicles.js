@@ -1,5 +1,22 @@
 const vehicleModel = require('../models/vehicles');
 
+exports.getPopulars = (req, res) => {
+    vehicleModel.getPopulars(results => {
+        if (results.length > 0) {
+            return res.json({
+                success: true,
+                message: 'List Populars',
+                results: results
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: 'Populars list not found'
+            });
+        }
+    });
+};
+
 exports.getVehicles = (req, res) => {
     vehicleModel.getVehicles(results => {
         if (results.length > 0) {
