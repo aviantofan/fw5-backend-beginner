@@ -1,5 +1,22 @@
 const historyModel = require('../models/histories');
 
+exports.getPopulars = (req, res) => {
+    historyModel.getPopulars(results => {
+        if (results.length > 0) {
+            return res.json({
+                success: true,
+                message: 'List Populars',
+                results: results
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: 'Populars list not found'
+            });
+        }
+    });
+};
+
 exports.getHistories = (req, res) => {
     historyModel.getHistories(results => {
         if (results.length > 0) {
