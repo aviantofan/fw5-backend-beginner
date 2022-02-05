@@ -70,39 +70,36 @@ exports.getVehicle = (req, res) => {
 };
 
 exports.postVehicle = (req,res) =>{
-    const capacity = parseInt(req.body.price) || null;
-    const price = parseInt(req.body.price) || null;
-    const qty = parseInt(req.body.qty);
-    if (!capacity){
-        return res.status(400).send({
-            success : false,
-            message : 'Capacity must be a Number!'
-        });
-    }
-    if (!price){
-        return res.status(400).send({
-            success : false,
-            message : 'Price must be a NUMBER!'
-        });
-    }
-    if (!qty){
-        return res.status(400).send({
-            success : false,
-            message : 'Quantity must be a NUMBER!'
-        });
-    }
     const data = {
         name   : req.body.name,
         color : req.body.color,
         loc : req.body.loc,
         isAvailable : req.body.isAvailable,
         isPrepay : req.body.isPrepay,
-        capacity : req.body.capacity,
-        category_id : req.body.category_id,
+        capacity : parseInt(req.body.capacity) || null,
+        category_id : parseInt(req.body.category_id) || null,
         reservationBefore : req.body.reservationBefore,
-        price : req.body.price,
+        price : parseInt(req.body.price) || null,
         qty : req.body.qty
     };
+    if (!data.capacity){
+        return res.status(400).send({
+            success : false,
+            message : 'Invalid input, Capacity must be a Number!'
+        });
+    }
+    if (!data.category_id){
+        return res.status(400).send({
+            success : false,
+            message : 'Invalid input, Category_id must be a Number!'
+        });
+    }
+    if (!data.price){
+        return res.status(400).send({
+            success : false,
+            message : 'Invalid input, Price must be a Number!'
+        });
+    }
     vehicleModel.getVehicleCheck(data, results =>{
         if (results.length < 1){
             vehicleModel.postVehicle(data, (results =>{
@@ -131,39 +128,36 @@ exports.postVehicle = (req,res) =>{
 };
 
 exports.patchVehicle = (req,res) =>{
-    const capacity = parseInt(req.body.price) || null;
-    const price = parseInt(req.body.price) || null;
-    const qty = parseInt(req.body.qty);
-    if (!capacity){
-        return res.status(400).send({
-            success : false,
-            message : 'Capacity must be a Number!'
-        });
-    }
-    if (!price){
-        return res.status(400).send({
-            success : false,
-            message : 'Price must be a NUMBER!'
-        });
-    }
-    if (!qty){
-        return res.status(400).send({
-            success : false,
-            message : 'Quantity must be a NUMBER!'
-        });
-    }
     const data = {
         name   : req.body.name,
         color : req.body.color,
         loc : req.body.loc,
         isAvailable : req.body.isAvailable,
         isPrepay : req.body.isPrepay,
-        capacity : req.body.capacity,
-        category_id : req.body.category_id,
+        capacity : parseInt(req.body.capacity) || null,
+        category_id : parseInt(req.body.category_id) || null,
         reservationBefore : req.body.reservationBefore,
-        price : req.body.price,
+        price : parseInt(req.body.price) || null,
         qty : req.body.qty
     };
+    if (!data.capacity){
+        return res.status(400).send({
+            success : false,
+            message : 'Invalid input, Capacity must be a Number!'
+        });
+    }
+    if (!data.category_id){
+        return res.status(400).send({
+            success : false,
+            message : 'Invalid input, Category_id must be a Number!'
+        });
+    }
+    if (!data.price){
+        return res.status(400).send({
+            success : false,
+            message : 'Invalid input, Price must be a Number!'
+        });
+    }
     const {id} = req.params;
     vehicleModel.getVehicle(id, (results =>{
         if (results.length > 0){
