@@ -60,19 +60,45 @@ exports.getVehicles = (req, res) => {
 };
 
 exports.getVehiclesCategory = (req, res) => {
-    vehicleModel.getVehiclesCategory(results => {
-        if (results.length > 0) {
-            return res.json({
-                success: true,
-                message: 'List Vehicles Category',
-                results: results
-            });
-        } else {
-            return res.status(404).json({
-                success: false,
-                message: 'Vehicles Category list not found'
-            });
-        }
+    let {name, location, categoryName, page, limit} = req.query;
+    name = name || '';
+    location = location || '';
+    categoryName = categoryName || '';
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 5;
+    const offset = (page-1)*limit;
+    const fin = {name, location, categoryName, page, limit, offset};
+    vehicleModel.getVehiclesCategory(fin, results => {
+        vehicleModel.countVehicles(fin, (count) => {
+            const { total } = count[0];
+            const last = Math.ceil(total/limit);
+            if (results.length > 0) {
+                return res.json({
+                    success: true,
+                    message: 'List Vehicles Category',
+                    results: results,
+                    pageInfo: {
+                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        totalData:total,
+                        currentPage: page,
+                        lastPage: last
+                    }
+                });
+            } else {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Vehicles Category list not found',
+                    pageInfo: {
+                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        totalData:total,
+                        currentPage: page,
+                        lastPage: last
+                    }
+                });
+            }
+        });
     });
 };
 
