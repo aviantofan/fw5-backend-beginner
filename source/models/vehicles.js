@@ -28,8 +28,8 @@ exports.getVehicle = (id, cb) => {
     });
 };
 
-exports.getVehiclesCategory = (cb) => {
-    db.query('SELECT v.name, c.name AS categoryName FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id', (err, res) => {
+exports.getVehiclesCategory = (fin, cb) => {
+    db.query(`SELECT v.id, v.name, v.loc FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id WHERE c.name LIKE '%${fin.categoryName}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
         if (err) throw err;
         cb(res);
     });
