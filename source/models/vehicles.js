@@ -1,5 +1,12 @@
 const db = require('../helpers/db');
 
+exports.countVehicles = (fin, cb) => {
+    db.query(`SELECT COUNT(*) as total FROM vehicles WHERE name LIKE '%${fin.name}%'AND loc LIKE '%${fin.location}%' LIMIT ${fin.limit}` , (err, res) => {
+        if (err) throw err;
+        cb(res);
+    });
+};
+
 exports.getPopulars = (cb) =>{
     db.query('SELECT h.vehicle_id, v.name AS vehicleName, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicle_id GROUP BY h.vehicle_id HAVING count(*) > 3 ORDER BY rentCount DESC', (err, res) =>{
         if (err) throw err;
@@ -7,8 +14,8 @@ exports.getPopulars = (cb) =>{
     });
 };
 
-exports.getVehicles = (cb) => {
-    db.query('SELECT * FROM vehicles', (err, res) => {
+exports.getVehicles = (fin, cb) => {
+    db.query(`SELECT v.id, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
         if (err) throw err;
         cb(res);
     });
@@ -21,7 +28,7 @@ exports.getVehicle = (id, cb) => {
     });
 };
 
-exports.getVehiclesCategory = (cb) => {
+exports.getVehiclesCategory = (fin, cb) => {
     db.query('SELECT v.name, c.name AS categoryName FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id', (err, res) => {
         if (err) throw err;
         cb(res);
