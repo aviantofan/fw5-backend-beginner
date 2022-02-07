@@ -77,11 +77,11 @@ exports.getVehiclesCategory = (req, res) => {
 };
 
 exports.getVehicle = (req, res) => {
-    const {id} = parseInt(req.params);
+    const id = parseInt(req.params.id)|| null;
     if (!id){
         return res.status(400).send({
             success: false,
-            message: 'Id must be number!'
+            message: 'Invalid input, Id must be number!'
         });
     }
     if (id>0){
@@ -223,7 +223,13 @@ exports.patchVehicle = (req,res) =>{
 };
 
 exports.deleteVehicle = (req, res) => {
-    const {id} = req.params;
+    const id = parseInt(req.params.id) || null;
+    if (!id){
+        return res.status(400).send({
+            success: false,
+            message: 'Invalid input, Id must be number!'
+        });
+    }
     vehicleModel.getVehicle(id, (results => {
         if (id!==null && id!==undefined){
             if (id > 0) {
