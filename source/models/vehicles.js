@@ -22,13 +22,13 @@ exports.getVehicles = (fin, cb) => {
 };
 
 exports.getVehicle = (id, cb) => {
-    db.query('SELECT * FROM vehicles WHERE id=?', [id], (err, res) => {
+    db.query('SELECT v.id, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id WHERE v.id=?', [id], (err, res) => {
         if (err) throw err;
         cb(res);
     });
 };
 
-exports.getVehiclesCategory = (fin, cb) => {
+exports.getVehiclesCategory = (cb) => {
     db.query('SELECT v.name, c.name AS categoryName FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id', (err, res) => {
         if (err) throw err;
         cb(res);
