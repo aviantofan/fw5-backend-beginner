@@ -18,19 +18,44 @@ exports.getPopulars = (req, res) => {
 };
 
 exports.getVehicles = (req, res) => {
-    vehicleModel.getVehicles(results => {
-        if (results.length > 0) {
-            return res.json({
-                success: true,
-                message: 'List Vehicles',
-                results: results
-            });
-        } else {
-            return res.status(404).json({
-                success: false,
-                message: 'Vehicles list not found'
-            });
-        }
+    let {name, location, page, limit} = req.query;
+    name = name || '';
+    location = location || '';
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 5;
+    const offset = (page-1)*limit;
+    const fin = {name, location, page, limit, offset};
+    vehicleModel.getVehicles(fin, results => {
+        vehicleModel.countVehicles(fin, (count) => {
+            const { total } = count[0];
+            const last = Math.ceil(total/limit);
+            if (results.length > 0) {
+                return res.json({
+                    success: true,
+                    message: 'List Vehicles',
+                    results: results,
+                    pageInfo: {
+                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        totalData:total,
+                        currentPage: page,
+                        lastPage: last
+                    }
+                });
+            } else {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Vehicles list not found',
+                    pageInfo: {
+                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        totalData:total,
+                        currentPage: page,
+                        lastPage: last
+                    }
+                });
+            }
+        });
     });
 };
 
@@ -52,21 +77,34 @@ exports.getVehiclesCategory = (req, res) => {
 };
 
 exports.getVehicle = (req, res) => {
-    const {id} = req.params;
-    vehicleModel.getVehicle(id, results => {
-        if (results.length > 0) {
-            return res.json({
-                success: true,
-                message: 'Detail Vehicle',
-                results: results[0]
-            });
-        } else {
-            return res.status(404).json({
-                success: false,
-                message: 'Vehicle not found'
-            });
-        }
-    });
+    const {id} = parseInt(req.params);
+    if (!id){
+        return res.status(400).send({
+            success: false,
+            message: 'Id must be number!'
+        });
+    }
+    if (id>0){
+        vehicleModel.getVehicle(id, results => {
+            if (results.length > 0) {
+                return res.json({
+                    success: true,
+                    message: 'Detail Vehicle',
+                    results: results[0]
+                });
+            } else {
+                return res.status(404).json({
+                    success: false,
+                    message: `Vehicle with ID: ${id} found`
+                });
+            }
+        });
+    } else {
+        return res.status(400).send({
+            success: false,
+            message: 'Id should be a number greater than 0'
+        });
+    } 
 };
 
 exports.postVehicle = (req,res) =>{
@@ -104,12 +142,10 @@ exports.postVehicle = (req,res) =>{
         if (results.length < 1){
             vehicleModel.postVehicle(data, (results =>{
                 if(results.affectedRows == 1){ 
-                    vehicleModel.getVehicles(results => {
-                        return res.send({
-                            success : true,
-                            messages : 'Input data vehicle success!',
-                            results : results
-                        });
+                    return res.send({
+                        success : true,
+                        messages : 'Input data vehicle success!',
+                        results : req.body
                     });
                 }else{
                     return res.status(500).send({
@@ -189,25 +225,40 @@ exports.patchVehicle = (req,res) =>{
 exports.deleteVehicle = (req, res) => {
     const {id} = req.params;
     vehicleModel.getVehicle(id, (results => {
-        if (results.length > 0) {
-            vehicleModel.deleteVehicle(id,(results => {
-                if(results.affectedRows == 1){
-                    return res.send({
-                        success : true,
-                        message : 'Data vehicle deleted success!'
-                    });
-                }else{
-                    return res.status(500).send({
-                        success : false,
-                        message : 'Data vehicle delete failed!'
+        if (id!==null && id!==undefined){
+            if (id > 0) {
+                if (results.length > 0) {
+                    vehicleModel.deleteVehicle(id,(results => {
+                        if(results.affectedRows == 1){
+                            return res.send({
+                                success : true,
+                                message : 'Data vehicle deleted success!'
+                            });
+                        }else{
+                            return res.status(500).send({
+                                success : false,
+                                message : 'Data vehicle delete failed!'
+                            });
+                        }
+                    }));
+                } else {
+                    return res.status(404).json({
+                        success: false,
+                        message: `Vehicle with ID : ${id} not found`
                     });
                 }
-            }));
-        } else {
-            return res.status(404).json({
+            }else{
+                return res.status(400).send({
+                    success: false,
+                    message: 'Id should be a number greater than 0'
+                });
+            }
+        }else{
+            return res.status(400).send({
                 success: false,
-                message: 'Vehicle not found'
+                message: 'Undefined Id'
             });
         }
+
     }));
 };
