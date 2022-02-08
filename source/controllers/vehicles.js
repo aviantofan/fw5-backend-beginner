@@ -121,7 +121,7 @@ exports.getVehicle = (req, res) => {
             } else {
                 return res.status(404).json({
                     success: false,
-                    message: `Vehicle with ID: ${id} found`
+                    message: `Vehicle with ID: ${id} not found`
                 });
             }
         });
