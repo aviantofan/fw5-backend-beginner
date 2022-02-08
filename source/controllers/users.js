@@ -8,7 +8,7 @@ exports.getUsers = (req, res) => {
     limit = parseInt(limit) || 5;
     const offset = (page-1)*limit;
     const fin = {name, address, page, limit, offset};
-    userModel.getUsers(results => {
+    userModel.getUsers(fin, results => {
         userModel.countUsers(fin, (count) => {
             const { total } = count[0];
             const last = Math.ceil(total/limit);
@@ -85,7 +85,7 @@ exports.postUser = (req,res) =>{
         if (results.length < 1){
             userModel.postUser(data, (results =>{
                 if(results.affectedRows == 1){ 
-                    userModel.getUser(results.insert, (temp) => {
+                    userModel.getUser(results.insertId, (temp) => {
                         return res.send({
                             success : true,
                             messages : 'Input data user success!',
