@@ -168,10 +168,12 @@ exports.postVehicle = (req,res) =>{
         if (results.length < 1){
             vehicleModel.postVehicle(data, (results =>{
                 if(results.affectedRows == 1){ 
-                    return res.send({
-                        success : true,
-                        messages : 'Input data vehicle success!',
-                        results : req.body
+                    vehicleModel.getVehicle(results.insertId, (temp) =>{
+                        return res.send({
+                            success : true,
+                            messages : 'Input data vehicle success!',
+                            results : temp[0]
+                        });
                     });
                 }else{
                     return res.status(500).send({
