@@ -1,7 +1,14 @@
 const db = require('../helpers/db');
 
-exports.getUsers = (cb) => {
-    db.query('SELECT * FROM users', (err, res) => {
+exports.countUsers = (fin, cb) => {
+    db.query(`SELECT COUNT(*) as total FROM users WHERE name LIKE '%${fin.name}%' AND address LIKE '%${fin.address}%' LIMIT ${fin.limit}` , (err, res) => {
+        if (err) throw err;
+        cb(res);
+    });
+};
+
+exports.getUsers = (fin, cb) => {
+    db.query(`SELECT * FROM users WHERE name LIKE '%${fin.name}%' AND address LIKE '%${fin.address}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
         if (err) throw err;
         cb(res);
     });
