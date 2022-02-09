@@ -18,8 +18,8 @@ exports.getUsers = (req, res) => {
                     message: 'List Users',
                     results: results,
                     pageInfo: {
-                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
-                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        prev: page > 1 ? `http://localhost:3000/users?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/users?page=${page+1}`: null,
                         totalData:total,
                         currentPage: page,
                         lastPage: last
@@ -30,8 +30,8 @@ exports.getUsers = (req, res) => {
                     success: false,
                     message: 'Users list not found',
                     pageInfo: {
-                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
-                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        prev: page > 1 ? `http://localhost:3000/users?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/users?page=${page+1}`: null,
                         totalData:total,
                         currentPage: page,
                         lastPage: last
