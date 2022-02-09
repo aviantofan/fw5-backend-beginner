@@ -189,3 +189,64 @@ exports.deleteHistory = (req, res) => {
         });
     }
 };
+
+exports.popularBasedOnMonth = (req, res) =>{
+    let { month, year } = req.query; 
+    month = parseInt(month) || null;
+    year = parseInt(year) || null;
+    const data = {month, year};
+    if (!month && !year){
+        return res.status(400).send({
+            success: false,
+            message: 'Month and Year must be filled with number'
+        });
+    }
+    if (!month){
+        return res.status(400).send({
+            success: false,
+            message: 'Month must be filled with number'
+        });
+    }
+    if (!year){
+        return res.status(400).send({
+            success: false,
+            message: 'Year must be filled with number'
+        });
+    }
+    historyModel.popularBasedonMonth(data, (result) => {
+        const cekMonth = (month) => {
+            return new Promise((resolve, reject) =>{
+                setTimeout(()=>{
+                    const mon = [1,2,3,4,5,6,7,8,9,10,11,12];
+                    let cek = mon.find((item)=>{
+                        return item === month;
+                    });
+                    if(cek){
+                        resolve(cek);    
+                    } else {
+                        reject(new Error('Month ' + month + ' does not include month'));
+                    }
+                }, 2000);
+            });
+        };
+        cekMonth(month, year).then((cek)=>{
+            if (result.length > 0){
+                return res.send({
+                    success: true,
+                    message: 'Most Popular Vehicles in month ' + cek + ' ' + year,
+                    result
+                });
+            } else {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Data vehicles not found'
+                });
+            }
+        }).catch((err)=>{
+            return res.status(400).send({
+                success: false,
+                message: ''+ err + '' 
+            });
+        });
+    });
+};
