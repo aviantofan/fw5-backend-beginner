@@ -43,3 +43,10 @@ exports.deleteHistory = (id, cb) => {
         cb(res);
     });
 };
+
+exports.popularBasedonMonth = (data, cb) => {
+    db.query(`SELECT COUNT(*) AS mostPopular, h.vehicleId AS idVehicle, v.name AS vehicleName, c.name AS Category, MONTH(h.createdAt) AS Month FROM histories h LEFT JOIN vehicles v ON v.id = h.vehicleId LEFT JOIN categories c ON v.categoryId=c.id WHERE MONTH(h.createdAt) = '${data.month}' AND YEAR(h.createdAt) = '${data.year}' GROUP BY h.vehicleId ORDER BY COUNT(*) DESC`, (err, res) => {
+        if (err) throw err;
+        cb(res);
+    });
+};
