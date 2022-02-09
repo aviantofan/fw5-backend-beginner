@@ -231,36 +231,36 @@ exports.postVehicle = (req,res) =>{
 };
 
 exports.patchVehicle = (req,res) =>{
-    const data = {
-        name   : req.body.name,
-        color : req.body.color,
-        loc : req.body.loc,
-        isAvailable : req.body.isAvailable,
-        isPrepay : req.body.isPrepay,
-        capacity : parseInt(req.body.capacity) || null,
-        categoryId : parseInt(req.body.categoryId) || null,
-        reservationBefore : req.body.reservationBefore,
-        price : parseInt(req.body.price) || null,
-        qty : req.body.qty
-    };
-    if (!data.capacity){
-        return res.status(400).send({
-            success : false,
-            message : 'Invalid input, Capacity must be a Number!'
-        });
-    }
-    if (!data.categoryId){
-        return res.status(400).send({
-            success : false,
-            message : 'Invalid input, Category_id must be a Number!'
-        });
-    }
-    if (!data.price){
-        return res.status(400).send({
-            success : false,
-            message : 'Invalid input, Price must be a Number!'
-        });
-    }
+    // const data = {
+    //     name   : req.body.name,
+    //     color : req.body.color,
+    //     loc : req.body.loc,
+    //     isAvailable : req.body.isAvailable,
+    //     isPrepay : req.body.isPrepay,
+    //     capacity : parseInt(req.body.capacity) || null,
+    //     categoryId : parseInt(req.body.categoryId) || null,
+    //     reservationBefore : req.body.reservationBefore,
+    //     price : parseInt(req.body.price) || null,
+    //     qty : req.body.qty
+    // };
+    // if (!data.capacity){
+    //     return res.status(400).send({
+    //         success : false,
+    //         message : 'Invalid input, Capacity must be a Number!'
+    //     });
+    // }
+    // if (!data.categoryId){
+    //     return res.status(400).send({
+    //         success : false,
+    //         message : 'Invalid input, Category_id must be a Number!'
+    //     });
+    // }
+    // if (!data.price){
+    //     return res.status(400).send({
+    //         success : false,
+    //         message : 'Invalid input, Price must be a Number!'
+    //     });
+    // }
     const id = parseInt(req.params.id) || null;
     if (!id){
         return res.status(400).send({
@@ -277,6 +277,12 @@ exports.patchVehicle = (req,res) =>{
     if (id>0){
         vehicleModel.getVehicle(id, (results =>{
             if (results.length > 0){
+                const data = {   };
+                const fillable = ['image','name','loc','isAvailable','isPrepay','capacity','categoryId','reservationBefore','price', 'qty'];
+                fillable.forEach(field => {
+                    data[field] = req.body[field];         
+                });
+                console.log(data);
                 vehicleModel.patchVehicle(data, id, (results =>{
                     if(results.affectedRows == 1){
                         vehicleModel.getVehicle(id, (results => {
