@@ -78,8 +78,8 @@ exports.getVehiclesCategory = (req, res) => {
                     message: 'List Vehicles Category',
                     results: results,
                     pageInfo: {
-                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
-                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        prev: page > 1 ? `http://localhost:3000/vehiclesCategory?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/vehiclesCategory?page=${page+1}`: null,
                         totalData:total,
                         currentPage: page,
                         lastPage: last
@@ -90,8 +90,8 @@ exports.getVehiclesCategory = (req, res) => {
                     success: false,
                     message: 'Vehicles Category list not found',
                     pageInfo: {
-                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
-                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        prev: page > 1 ? `http://localhost:3000/vehiclesCategory?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/vehiclesCategory?page=${page+1}`: null,
                         totalData:total,
                         currentPage: page,
                         lastPage: last
@@ -141,7 +141,7 @@ exports.postVehicle = (req,res) =>{
         isAvailable : req.body.isAvailable,
         isPrepay : req.body.isPrepay,
         capacity : parseInt(req.body.capacity) || null,
-        category_id : parseInt(req.body.category_id) || null,
+        categoryId : parseInt(req.body.categoryId) || null,
         reservationBefore : req.body.reservationBefore,
         price : parseInt(req.body.price) || null,
         qty : req.body.qty
@@ -152,7 +152,7 @@ exports.postVehicle = (req,res) =>{
             message : 'Invalid input, Capacity must be a Number!'
         });
     }
-    if (!data.category_id){
+    if (!data.categoryId){
         return res.status(400).send({
             success : false,
             message : 'Invalid input, Category_id must be a Number!'
@@ -199,7 +199,7 @@ exports.patchVehicle = (req,res) =>{
         isAvailable : req.body.isAvailable,
         isPrepay : req.body.isPrepay,
         capacity : parseInt(req.body.capacity) || null,
-        category_id : parseInt(req.body.category_id) || null,
+        categoryId : parseInt(req.body.categoryId) || null,
         reservationBefore : req.body.reservationBefore,
         price : parseInt(req.body.price) || null,
         qty : req.body.qty
@@ -210,7 +210,7 @@ exports.patchVehicle = (req,res) =>{
             message : 'Invalid input, Capacity must be a Number!'
         });
     }
-    if (!data.category_id){
+    if (!data.categoryId){
         return res.status(400).send({
             success : false,
             message : 'Invalid input, Category_id must be a Number!'
