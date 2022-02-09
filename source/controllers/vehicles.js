@@ -28,6 +28,13 @@ exports.getVehicles = (req, res) => {
     const offset = (page-1)*limit;
     const fin = {name, location, page, limit, offset};
     vehicleModel.getVehicles(fin, results => {
+        const processedResult = results.map((obj) => {
+            if(obj.image !== null){
+                obj.image = `${APP_URL}/${obj.image}`;
+            }
+            return obj;
+        });
+        console.log(processedResult);
         vehicleModel.countVehicles(fin, (count) => {
             const { total } = count[0];
             const last = Math.ceil(total/limit);
@@ -112,8 +119,21 @@ exports.getVehicle = (req, res) => {
             message: 'Invalid input, Id must be number!'
         });
     }
+    if (id == ''){
+        return res.status(400).send({
+            success: false,
+            message: 'Id cannot empty!'
+        });
+    }
     if (id>0){
         vehicleModel.getVehicle(id, results => {
+            const processedResult = results.map((obj) => {
+                if(obj.image !== null){
+                    obj.image = `${APP_URL}/${obj.image}`;
+                }
+                return obj;
+            });
+            console.log(processedResult);
             if (results.length > 0) {
                 return res.json({
                     success: true,
@@ -248,6 +268,12 @@ exports.patchVehicle = (req,res) =>{
             message: 'Invalid input, Id must be number!'
         });
     }
+    if (id == ''){
+        return res.status(400).send({
+            success: false,
+            message: 'Id cannot empty!'
+        });
+    }
     if (id>0){
         vehicleModel.getVehicle(id, (results =>{
             if (results.length > 0){
@@ -288,6 +314,12 @@ exports.deleteVehicle = (req, res) => {
         return res.status(400).send({
             success: false,
             message: 'Invalid input, Id must be number!'
+        });
+    }
+    if (id == ''){
+        return res.status(400).send({
+            success: false,
+            message: 'Id cannot empty!'
         });
     }
     vehicleModel.getVehicle(id, (results => {
