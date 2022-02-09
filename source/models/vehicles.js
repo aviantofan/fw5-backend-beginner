@@ -8,28 +8,28 @@ exports.countVehicles = (fin, cb) => {
 };
 
 exports.getPopulars = (cb) =>{
-    db.query('SELECT h.vehicle_id, v.name AS vehicleName, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicle_id GROUP BY h.vehicle_id HAVING count(*) > 3 ORDER BY rentCount DESC', (err, res) =>{
+    db.query('SELECT h.vehicleId, v.name AS vehicleName, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicle_id GROUP BY h.vehicle_id HAVING count(*) > 3 ORDER BY rentCount DESC', (err, res) =>{
         if (err) throw err;
         cb(res);
     });
 };
 
 exports.getVehicles = (fin, cb) => {
-    db.query(`SELECT v.id, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+    db.query(`SELECT v.id, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.price*50/100 AS minPrepayment, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
         if (err) throw err;
         cb(res);
     });
 };
 
 exports.getVehicle = (id, cb) => {
-    db.query('SELECT v.id, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id WHERE v.id=?', [id], (err, res) => {
+    db.query('SELECT v.id, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.price*50/100 AS minPrepayment, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.id=?', [id], (err, res) => {
         if (err) throw err;
         cb(res);
     });
 };
 
 exports.getVehiclesCategory = (fin, cb) => {
-    db.query(`SELECT v.id, v.name, v.loc FROM vehicles v LEFT JOIN categories c ON v.category_id=c.id WHERE c.name LIKE '%${fin.categoryName}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+    db.query(`SELECT v.id, v.name, v.loc FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE c.name LIKE '%${fin.categoryName}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
         if (err) throw err;
         cb(res);
     });
