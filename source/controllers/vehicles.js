@@ -1,4 +1,6 @@
 const vehicleModel = require('../models/vehicles');
+const {APP_URL} = process.env;
+const upload = require('../helpers/upload').single('image');
 
 exports.getPopulars = (req, res) => {
     vehicleModel.getPopulars(results => {
@@ -134,60 +136,77 @@ exports.getVehicle = (req, res) => {
 };
 
 exports.postVehicle = (req,res) =>{
-    const data = {
-        name   : req.body.name,
-        color : req.body.color,
-        loc : req.body.loc,
-        isAvailable : req.body.isAvailable,
-        isPrepay : req.body.isPrepay,
-        capacity : parseInt(req.body.capacity) || null,
-        categoryId : parseInt(req.body.categoryId) || null,
-        reservationBefore : req.body.reservationBefore,
-        price : parseInt(req.body.price) || null,
-        qty : req.body.qty
-    };
-    if (!data.capacity){
-        return res.status(400).send({
-            success : false,
-            message : 'Invalid input, Capacity must be a Number!'
-        });
-    }
-    if (!data.categoryId){
-        return res.status(400).send({
-            success : false,
-            message : 'Invalid input, Category_id must be a Number!'
-        });
-    }
-    if (!data.price){
-        return res.status(400).send({
-            success : false,
-            message : 'Invalid input, Price must be a Number!'
-        });
-    }
-    vehicleModel.getVehicleCheck(data, results =>{
-        if (results.length < 1){
-            vehicleModel.postVehicle(data, (results =>{
-                if(results.affectedRows == 1){ 
-                    vehicleModel.getVehicle(results.insertId, (temp) =>{
-                        return res.send({
-                            success : true,
-                            messages : 'Input data vehicle success!',
-                            results : temp[0]
-                        });
-                    });
-                }else{
-                    return res.status(500).send({
-                        success : false,
-                        message : 'Input data vehicle failed!'
-                    });
-                }
-            }));
-        }else{
-            return res.status(400).send({
-                success : false,
-                message : 'Data has already inserted!'
+    upload(req, res, function(err){
+        if(err){
+            return res.status(400).json({
+                success: false,
+                message: err.message
             });
         }
+        const data = {
+            name   : req.body.name,
+            color : req.body.color,
+            loc : req.body.loc,
+            isAvailable : req.body.isAvailable,
+            isPrepay : req.body.isPrepay,
+            capacity : parseInt(req.body.capacity) || null,
+            categoryId : parseInt(req.body.categoryId) || null,
+            reservationBefore : req.body.reservationBefore,
+            price : parseInt(req.body.price) || null,
+            qty : req.body.qty
+        };
+        if (!data.capacity){
+            return res.status(400).send({
+                success : false,
+                message : 'Invalid input, Capacity must be a Number!'
+            });
+        }
+        if (!data.categoryId){
+            return res.status(400).send({
+                success : false,
+                message : 'Invalid input, Category_id must be a Number!'
+            });
+        }
+        if (!data.price){
+            return res.status(400).send({
+                success : false,
+                message : 'Invalid input, Price must be a Number!'
+            });
+        }
+        if(req.file){
+            data.image = req.file.path;
+        }
+        vehicleModel.getVehicleCheck(data, results =>{
+            if (results.length < 1){
+                vehicleModel.postVehicle(data, (results =>{
+                    if(results.affectedRows == 1){ 
+                        vehicleModel.getVehicle(results.insertId, (temp) =>{
+                            const mapResults = temp.map(o => {
+                                if(o.image!== null){
+                                    o.image = `${APP_URL}/${o.image}`;
+                                }
+                                return o;
+                            });
+                            return res.send({
+                                success : true,
+                                messages : 'Input data vehicle success!',
+                                results : mapResults[0]
+                            });
+                        });
+                    }else{
+                        return res.status(500).send({
+                            success : false,
+                            message : 'Input data vehicle failed!'
+                        });
+                    }
+                }));
+            }else{
+                return res.status(400).send({
+                    success : false,
+                    message : 'Data has already inserted!'
+                });
+            }
+        });
     });
 };
 
