@@ -9,7 +9,7 @@ exports.getHistories = (req, res) => {
     const offset = (page-1)*limit;
     const fin = {userName, vehicleName, page, limit, offset};
     historyModel.getHistories(fin, results => {
-        historyModel.countUsers(fin, (count) => {
+        historyModel.countHistories(fin, (count) => {
             const { total } = count[0];
             const last = Math.ceil(total/limit);
             if (results.length > 0) {
@@ -18,8 +18,8 @@ exports.getHistories = (req, res) => {
                     message: 'List Histories',
                     results: results,
                     pageInfo: {
-                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
-                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        prev: page > 1 ? `http://localhost:3000/histories?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/histories?page=${page+1}`: null,
                         totalData:total,
                         currentPage: page,
                         lastPage: last
@@ -30,8 +30,8 @@ exports.getHistories = (req, res) => {
                     success: false,
                     message: 'History list not found',
                     pageInfo: {
-                        prev: page > 1 ? `http://localhost:3000/vehicles?page=${page-1}`: null,
-                        next: page < last ? `http://localhost:3000/vehicles?page=${page+1}`: null,
+                        prev: page > 1 ? `http://localhost:3000/histories?page=${page-1}`: null,
+                        next: page < last ? `http://localhost:3000/histories?page=${page+1}`: null,
                         totalData:total,
                         currentPage: page,
                         lastPage: last
