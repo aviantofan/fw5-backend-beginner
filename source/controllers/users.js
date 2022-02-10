@@ -1,4 +1,5 @@
 const userModel = require('../models/users');
+const bcrypt = require('bcrypt');
 
 exports.getUsers = (req, res) => {
     let {name, address, page, limit} = req.query;
@@ -73,39 +74,62 @@ exports.getUser = (req, res) => {
     }
 };
 
-exports.postUser = (req,res) =>{
-    const data = {
-        name   : req.body.name,
-        email : req.body.email,
-        gender : req.body.gender,
-        address : req.body.address,
-        birthdate : req.body.birthdate
-    };
-    userModel.getUserCheck(data, results =>{
-        if (results.length < 1){
-            userModel.postUser(data, (results =>{
-                if(results.affectedRows == 1){ 
-                    userModel.getUser(results.insertId, (temp) => {
-                        return res.send({
-                            success : true,
-                            messages : 'Input data user success!',
-                            results : temp[0]
-                        });
-                    });
-                }else{
-                    return res.status(500).send({
-                        success : false,
-                        message : 'Input data user failed!'
-                    });
-                }
-            }));
-        }else{
-            return res.status(400).send({
-                success : false,
-                message : 'Data has already inserted!'
-            });
-        }
-    });
+// exports.postUser = (req,res) =>{
+//     const data = {
+//         name   : req.body.name,
+//         email : req.body.email,
+//         username : req.body.username,
+//         password : req.body.password,
+//         gender : req.body.gender,
+//         address : req.body.address,
+//         phone : req.body.phone,
+//         birthdate : req.body.birthdate
+//     };
+//     userModel.getUserCheck(data, results =>{
+//         if (results.length < 1){
+//             userModel.postUser(data, (results =>{
+//                 if(results.affectedRows == 1){ 
+//                     userModel.getUser(results.insertId, (temp) => {
+//                         return res.send({
+//                             success : true,
+//                             messages : 'Input data user success!',
+//                             results : temp[0]
+//                         });
+//                     });
+//                 }else{
+//                     return res.status(500).send({
+//                         success : false,
+//                         message : 'Input data user failed!'
+//                     });
+//                 }
+//             }));
+//         }else{
+//             return res.status(400).send({
+//                 success : false,
+//                 message : 'Data has already inserted!'
+//             });
+//         }
+//     });
+// };
+
+exports.postUser = async (req, res) => {
+    const { name, email, username, password : rawPassword, gender, address, phone, birthdate} = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(rawPassword, salt);
+    const result = await userModel.postUser({ name, email, username, password, gender, address, phone, birthdate});
+    const get = await userModel.getPostUser();
+    if (result.affectedRows >= 1){
+        return res.send({
+            success: true,
+            message: 'Data User Posted',
+            result: get
+        });
+    } else {
+        return res.status(500).send({
+            success: false,
+            message: 'Data not Posted'
+        });
+    }
 };
 
 exports.patchUser = (req,res) =>{
