@@ -1,5 +1,4 @@
 const express = require('express');
-
 require('dotenv').config();
 
 const app = express();
@@ -7,7 +6,10 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 
 app.use(require('./source/routes'));
+app.use('/uploads', express.static('uploads'));
 
-app.listen(5000, ()=>{
-    console.log('App listening on port 5000');
+const {PORT, APP_PORT} = process.env;
+
+app.listen(PORT || APP_PORT, ()=>{
+    console.log(`App listening on port ${PORT || APP_PORT}`);
 });
