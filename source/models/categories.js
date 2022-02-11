@@ -1,46 +1,46 @@
 const db = require('../helpers/db');
 
 exports.getCategories = (cb) => {
-    db.query('SELECT * FROM categories', (err, res) => {
-        if (err) throw err;
-        cb(res);
-    });
+  db.query('SELECT * FROM categories', (err, res) => {
+    if (err) throw err;
+    cb(res);
+  });
 };
 
 exports.getCategory = (id, cb) => {
-    db.query('SELECT * FROM categories WHERE id=?', [id], (err, res) => {
-        if (err) throw err;
-        cb(res);
-    });
+  db.query('SELECT * FROM categories WHERE id=?', [id], (err, res) => {
+    if (err) throw err;
+    cb(res);
+  });
 };
 
 exports.getCategoryCheck = (data,cb) => {
-    db.query('SELECT name FROM categories WHERE name = ?', [data.name], (err, res) => {
-        if(err) throw err;
-        cb(res);
-    });
-    return(db);
+  db.query('SELECT name FROM categories WHERE name = ?', [data.name], (err, res) => {
+    if(err) throw err;
+    cb(res);
+  });
+  return(db);
 };
 
 exports.postCategory = (data, cb) =>{
-    db.query('INSERT INTO categories SET ?', [data], (err, res) => {
-        if(err) throw err;
-        cb(res);
-    });
-    return (db);
+  db.query('INSERT INTO categories SET ?', [data], (err, res) => {
+    if(err) throw err;
+    cb(res);
+  });
+  return (db);
 };
 
 exports.patchCategory = (data, id, cb) => {
-    db.query('UPDATE categories SET ? WHERE id=?', [data, id], (err, res) => {
-        if (err) throw err;
-        cb(res);
-    });
-    return(db);
+  db.query('UPDATE categories SET ? WHERE id=?', [data, id], (err, res) => {
+    if (err) throw err;
+    cb(res);
+  });
+  return(db);
 };
 
 exports.deleteCategory = (id, cb) => {
-    db.query('DELETE FROM categories WHERE id = ?',[id], (err, res)=>{
-        if(err) throw err;
-        cb(res);
-    });
+  db.query('DELETE FROM categories WHERE id = ?',[id], (err, res)=>{
+    if(err) throw err;
+    cb(res);
+  });
 };

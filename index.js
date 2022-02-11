@@ -11,5 +11,5 @@ app.use('/uploads', express.static('uploads'));
 const {PORT, APP_PORT} = process.env;
 
 app.listen(PORT || APP_PORT, ()=>{
-    console.log(`App listening on port ${PORT || APP_PORT}`);
+  console.log(`App listening on port ${PORT || APP_PORT}`);
 });
