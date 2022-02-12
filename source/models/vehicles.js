@@ -7,6 +7,13 @@ exports.countVehicles = (fin, cb) => {
   });
 };
 
+exports.countPopular = (fin, cb) => {
+  db.query(`SELECT COUNT(*) as total FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicle_id GROUP BY h.vehicle_id HAVING count(*) > 3 ORDER BY rentCount DESC WHERE LIMIT ${fin.limit}`, (err, res) => {
+    if (err) throw err;
+    cb(res);
+  });
+};
+
 exports.getPopulars = (cb) => {
   db.query('SELECT h.vehicleId, v.name AS vehicleName, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicle_id GROUP BY h.vehicle_id HAVING count(*) > 3 ORDER BY rentCount DESC', (err, res) => {
     if (err) throw err;
