@@ -8,7 +8,7 @@ exports.countCategories = (fin, cb) => {
 };
 
 exports.getCategories = (fin, cb) => {
-  db.query(`SELECT id, image, name, createdAt, updatedAt FROM categories WHERE name LIKE '%${fin.name}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+  db.query(`SELECT * FROM categories WHERE name LIKE '%${fin.name}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });

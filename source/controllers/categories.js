@@ -105,7 +105,7 @@ exports.postCategory = (req, res) => {
       if (results.length < 1) {
         categoryModel.postCategory(data, (results => {
           if (results.affectedRows == 1) {
-            categoryModel.getCategories(results.insertId, (temp) => {
+            categoryModel.getCategory(results.insertId, (temp) => {
               const mapResults = temp.map(o => {
                 if (o.image !== null) {
                   o.image = `${APP_URL}/${o.image}`;
