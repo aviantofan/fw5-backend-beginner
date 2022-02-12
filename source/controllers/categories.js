@@ -141,56 +141,73 @@ exports.patchCategory = (req, res) => {
   //   name: req.body.name
   // };
   // history.push(data);
-  const id = parseInt(req.params.id);
-  if (!id) {
-    return res.status(400).send({
-      success: false,
-      message: 'Invalid input, Id must be number!'
-    });
-  }
-  if (id == '') {
-    return res.status(400).send({
-      success: false,
-      message: 'Id cannot empty!'
-    });
-  }
-  if (id > 0) {
-    categoryModel.getCategory(id, (results => {
-      if (results.length > 0) {
-        const data = {};
-        const fillable = ['image', 'name'];
-        fillable.forEach(field => {
-          data[field] = req.body[field];
-        });
-        categoryModel.patchCategory(data, id, (results => {
-          if (results.affectedRows == 1) {
-            categoryModel.getCategory(id, (results => {
-              return res.send({
-                success: true,
-                messages: 'Updated data category success!',
-                results: results[0]
-              });
-            }));
-          } else {
-            return res.status(500).send({
-              success: false,
-              message: 'Data category updated failed!'
-            });
+  upload(req, res, function (err) {
+    if (err) {
+      return res.status(400).json({
+        success: false,
+        message: err.message
+      });
+    }
+    const id = parseInt(req.params.id);
+    if (!id) {
+      return res.status(400).send({
+        success: false,
+        message: 'Invalid input, Id must be number!'
+      });
+    }
+    if (id == '') {
+      return res.status(400).send({
+        success: false,
+        message: 'Id cannot empty!'
+      });
+    }
+    if (id > 0) {
+      categoryModel.getCategory(id, (results => {
+        if (results.length > 0) {
+          const data = {};
+          const fillable = ['name'];
+          fillable.forEach(field => {
+            data[field] = req.body[field];
+          });
+          if (req.file) {
+            data.image = req.file.path;
           }
-        }));
-      } else {
-        return res.status(404).json({
-          success: false,
-          message: 'Category not found'
-        });
-      }
-    }));
-  } else {
-    return res.status(400).send({
-      success: false,
-      message: 'Id should be a number greater than 0'
-    });
-  }
+          categoryModel.patchCategory(data, id, (results => {
+            if (results.affectedRows == 1) {
+              categoryModel.getCategory(id, (fin) => {
+                const mapResult = fin.map(o => {
+                  if (o.image !== null) {
+                    o.image = `${APP_URL}/${o.image}`;
+                  }
+                  return o;
+                });
+                return res.send({
+                  success: true,
+                  messages: 'Updated data category success!',
+                  results: mapResult[0]
+                });
+              });
+            } else {
+              return res.status(500).send({
+                success: false,
+                message: 'Data category updated failed!'
+              });
+            }
+          }));
+        } else {
+          return res.status(404).json({
+            success: false,
+            message: 'Category not found'
+          });
+        }
+      }));
+    } else {
+      return res.status(400).send({
+        success: false,
+        message: 'Id should be a number greater than 0'
+      });
+    }
+  });
 };
 
 
