@@ -16,6 +16,7 @@ exports.getCategories = (req, res) => {
       }
       return obj;
     });
+    console.log(processedResult);
     categoryModel.countCategories(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
