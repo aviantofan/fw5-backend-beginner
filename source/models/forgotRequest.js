@@ -20,3 +20,10 @@ exports.getRequest = (code) => new Promise((resolve, reject) => {
     resolve(res);
   });
 });
+
+exports.getUser = (id) => new Promise((resolve, reject) => {
+  db.query('SELECT id, username, email, password FROM users WHERE id = ?', [id], (err, res) => {
+    if (err) reject(err);
+    resolve(res);
+  });
+});

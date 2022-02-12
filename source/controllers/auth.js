@@ -9,7 +9,6 @@ const { APP_SECRET, APP_EMAIL } = process.env;
 exports.login = async (req, res) => {
   const { username, password } = req.body;
   const result = await userModel.getUserByUsername(username);
-  console.log(result);
   if (result.length === 1) {
     const { password: hash } = result[0];
     const fin = await bcrypt.compare(password, hash);
@@ -40,7 +39,6 @@ exports.register = async (req, res) => {
   const password = await bcrypt.hash(rawPassword, salt);
   const result = await userModel.register({ name, email, username, password });
   await userModel.registerByUsername(username);
-  console.log(result);
   if (result.affectedRows >= 1) {
     return res.send({
       success: true,
@@ -79,7 +77,7 @@ exports.forgotPassword = async (req, res) => {
   if (!code) {
     const user = await userModel.getUserByUsername(email);
     if (user.length === 1) {
-      const randomCode = Math.round(Math.random() * (999999 - 100000) - 100000);
+      const randomCode = Math.floor(Math.pow(10, 6 - 1) + Math.random() * (Math.pow(10, 6) - Math.pow(10, 6 - 1) - 1));
       const reset = await forgotRequestModel.createRequest(user[0].id, randomCode);
       if (reset.affectedRows >= 1) {
         const info = await mail.sendMail({
@@ -87,7 +85,7 @@ exports.forgotPassword = async (req, res) => {
           to: email,
           subject: 'Reset Your Password | Backend Beginner',
           text: String(randomCode),
-          html: `<b>${randomCode}</b>`
+          html: `<b> This is ${randomCode} your code for reset your password! DO NOT GIVE THIS CODE TO OTHERS!</b>`
         });
         console.log(info.messageId);
         return response(res, 'Forgot Password request has been sent to your email!');
@@ -104,7 +102,7 @@ exports.forgotPassword = async (req, res) => {
         if (result[0].isExpired) {
           return response(res, 'Expired code', null, 400);
         }
-        const user = await userModel.getUserById(result[0].user_id);
+        const user = await forgotRequestModel.getUser(result[0].userId);
         if (user[0].email === email) {
           if (password) {
             if (password === confirmPassword) {

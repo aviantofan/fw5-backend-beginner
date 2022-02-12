@@ -1,14 +1,14 @@
 const db = require('../helpers/db');
 
 exports.countVehicles = (fin, cb) => {
-  db.query(`SELECT COUNT(*) as total FROM vehicles WHERE name LIKE '%${fin.name}%'AND loc LIKE '%${fin.location}%' LIMIT ${fin.limit}` , (err, res) => {
+  db.query(`SELECT COUNT(*) as total FROM vehicles WHERE name LIKE '%${fin.name}%'AND loc LIKE '%${fin.location}%' LIMIT ${fin.limit}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });
 };
 
-exports.getPopulars = (cb) =>{
-  db.query('SELECT h.vehicleId, v.name AS vehicleName, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicle_id GROUP BY h.vehicle_id HAVING count(*) > 3 ORDER BY rentCount DESC', (err, res) =>{
+exports.getPopulars = (cb) => {
+  db.query('SELECT h.vehicleId, v.name AS vehicleName, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicle_id GROUP BY h.vehicle_id HAVING count(*) > 3 ORDER BY rentCount DESC', (err, res) => {
     if (err) throw err;
     cb(res);
   });
@@ -35,17 +35,17 @@ exports.getVehiclesCategory = (fin, cb) => {
   });
 };
 
-exports.getVehicleCheck = (data,cb) => {
+exports.getVehicleCheck = (data, cb) => {
   db.query('SELECT name FROM vehicles WHERE name = ?', [data.name], (err, res) => {
-    if(err) throw err;
+    if (err) throw err;
     cb(res);
   });
-  return(db);
+  return (db);
 };
 
-exports.postVehicle = (data, cb) =>{
+exports.postVehicle = (data, cb) => {
   db.query('INSERT INTO vehicles SET ?', data, (err, res) => {
-    if(err) throw err;
+    if (err) throw err;
     cb(res);
   });
   return (db);
@@ -56,12 +56,12 @@ exports.patchVehicle = (data, id, cb) => {
     if (err) throw err;
     cb(res);
   });
-  return(db);
+  return (db);
 };
 
 exports.deleteVehicle = (id, cb) => {
-  db.query('DELETE FROM vehicles WHERE id = ?',[id], (err, res)=>{
-    if(err) throw err;
+  db.query('DELETE FROM vehicles WHERE id = ?', [id], (err, res) => {
+    if (err) throw err;
     cb(res);
   });
 };
