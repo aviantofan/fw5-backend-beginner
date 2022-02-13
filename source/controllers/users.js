@@ -1,5 +1,6 @@
 const userModel = require('../models/users');
-// const bcrypt = require('bcrypt');
+const { APP_URL } = process.env;
+const upload = require('../helpers/upload').single('image');
 
 exports.getUsers = (req, res) => {
   let { name, address, page, limit } = req.query;
@@ -133,50 +134,67 @@ exports.postUser = (req, res) => {
 // };
 
 exports.patchUser = (req, res) => {
-  const data = {};
-  const fillable = ['name', 'email', 'username', 'password', 'gender', 'address', 'phone', 'birthdate'];
-  fillable.forEach(field => {
-    data[field] = req.body[field];
-  });
-  const id = parseInt(req.params.id);
-  if (!id) {
-    return res.status(400).send({
-      success: false,
-      message: 'Invalid input, Id must be number!'
-    });
-  }
-  if (id > 0) {
-    userModel.getUser(id, (results => {
-      if (results.length > 0) {
-        userModel.patchUser(data, id, (results => {
-          if (results.affectedRows == 1) {
-            userModel.getUser(id, (results => {
-              return res.send({
-                success: true,
-                messages: 'Updated data user success!',
-                results: results[0]
-              });
-            }));
-          } else {
-            return res.status(500).send({
-              success: false,
-              message: 'Data user updated failed!'
-            });
+  upload(req, res, function (err) {
+    if (err) {
+      return res.status(400).json({
+        success: false,
+        message: err.message
+      });
+    }
+    const id = parseInt(req.params.id);
+    if (!id) {
+      return res.status(400).send({
+        success: false,
+        message: 'Invalid input, Id must be number!'
+      });
+    }
+    if (id > 0) {
+      userModel.getUser(id, (results => {
+        if (results.length > 0) {
+          const data = {};
+          const fillable = ['name', 'email', 'username', 'password', 'gender', 'address', 'phone', 'birthdate'];
+          fillable.forEach(field => {
+            data[field] = req.body[field];
+          });
+          if (req.file) {
+            data.image = req.file.path;
           }
-        }));
-      } else {
-        return res.status(404).json({
-          success: false,
-          message: `User with ID: ${id} not found`
-        });
-      }
-    }));
-  } else {
-    return res.status(400).send({
-      success: false,
-      message: 'Id should be a number greater than 0'
-    });
-  }
+          userModel.patchUser(data, id, (results => {
+            if (results.affectedRows == 1) {
+              userModel.getUser(id, (temp) => {
+                const mapResults = temp.map(o => {
+                  if (o.image !== null) {
+                    o.image = `${APP_URL}/${o.image}`;
+                  }
+                  return o;
+                });
+                return res.send({
+                  success: true,
+                  messages: 'Updated data user success!',
+                  results: mapResults[0]
+                });
+              });
+            } else {
+              return res.status(500).send({
+                success: false,
+                message: 'Data user updated failed!'
+              });
+            }
+          }));
+        } else {
+          return res.status(404).json({
+            success: false,
+            message: `User with ID: ${id} not found`
+          });
+        }
+      }));
+    } else {
+      return res.status(400).send({
+        success: false,
+        message: 'Id should be a number greater than 0'
+      });
+    }
+  });
 };
 
 exports.deleteUser = (req, res) => {
