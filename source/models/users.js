@@ -21,29 +21,27 @@ exports.getUser = (id, cb) => {
   });
 };
 
-exports.getUserCheckName = (data, cb) => {
-  db.query('SELECT name FROM users WHERE name = ?', [data.name], (err, res) => {
-    if (err) throw err;
-    cb(res);
-  });
-  return (db);
-};
+exports.getUserCheckName = (data) => new Promise((resolve, reject) => {
+  db.query('SELECT name FROM users WHERE name = ?', [data.name],
+    (err, res) => {
+      if (err) reject(err);
+      resolve(res);
+    });
+});
 
-exports.getUserCheckEmail = (data, cb) => {
+exports.getUserCheckEmail = (data) => new Promise((resolve, reject) => {
   db.query('SELECT name FROM users WHERE email = ?', [data.email], (err, res) => {
-    if (err) throw err;
-    cb(res);
+    if (err) reject(err);
+    resolve(res);
   });
-  return (db);
-};
+});
 
-exports.getUserCheckUsername = (data, cb) => {
+exports.getUserCheckUsername = (data) => new Promise((resolve, reject) => {
   db.query('SELECT name FROM users WHERE username = ?', [data.username], (err, res) => {
-    if (err) throw err;
-    cb(res);
+    if (err) reject(err);
+    resolve(res);
   });
-  return (db);
-};
+});
 
 // exports.postUser = (data, cb) =>{
 //     db.query('INSERT INTO users SET ?', data, (err, res) => {
