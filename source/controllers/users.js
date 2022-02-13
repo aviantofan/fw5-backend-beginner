@@ -152,7 +152,7 @@ exports.patchUser = (req, res) => {
       userModel.getUser(id, (results => {
         if (results.length > 0) {
           const data = {};
-          const fillable = ['name', 'email', 'username', 'password', 'gender', 'address', 'phone', 'birthdate'];
+          const fillable = ['gender', 'address', 'phone', 'birthdate'];
           fillable.forEach(field => {
             data[field] = req.body[field];
           });
