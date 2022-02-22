@@ -7,6 +7,8 @@ This is the repository API Backend of vehicleRent
 This is an API programs for vehicleRent, this programs can process data in vehicleRent database by access some endpoints. The endpoints provided to access vehicles, categories, users, and histories.
  
 #### Vehicles Endpoint|
+| METHOD | API | REMARKS |
+| :-------------: |:-------------:|:-----------:|
 | ```GET``` | /vehicles | Get all data vehicle|
 | ```GET``` | /vehicles?search=xx | Get all data vehicle by search|
 | ```GET``` | /populars | Get data vehicle populars|
@@ -17,6 +19,8 @@ This is an API programs for vehicleRent, this programs can process data in vehic
 | ```DELETE``` | /vehicles/:id | delete data vehicle by id|
 
 #### Categories Endpoint
+| METHOD | API | REMARKS |
+| :-------------: |:-------------:|:-----------:|
 | ```GET``` | /categories | Get all data category|
 | ```GET``` | /categories?search=xx | Get all data category by search|
 | ```GET``` | /categories?pagexx&limit=xx | Get all data category with page and limit|
@@ -26,6 +30,8 @@ This is an API programs for vehicleRent, this programs can process data in vehic
 | ```DELETE``` | /categories/:id | delete data category by id|
 
 #### Users Endpoint all data users|
+| METHOD | API | REMARKS |
+| :-------------: |:-------------:|:-----------:|
 | ```GET``` | /users?search=xx | Get all data user by search |
 | ```GET``` | /users?pagexx&limit=xx |Get all data user with page and limit|
 | ```GET``` | /users | Get all data User|
@@ -35,6 +41,8 @@ This is an API programs for vehicleRent, this programs can process data in vehic
 | ```DELETE``` | /users/:id | delete data user by id|
 
 #### History Endpoint
+| METHOD | API | REMARKS |
+| :-------------: |:-------------:|:-----------:|
 | ```GET``` | /histories/vehicles/createdAt| Get all data popular based on month|
 | ```GET``` | /histories | Get all data vehicle|
 | ```GET``` | /histories?search=xx | Get all data by search|
