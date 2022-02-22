@@ -35,43 +35,35 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   const { name, email, username, password: rawPassword } = req.body;
-  const results = await userModel.getUserCheckName({ name });
+  const results = await userModel.getUserCheckEmail({ email });
   if (results.length < 1) {
-    const results = await userModel.getUserCheckEmail({ email });
+    const results = await userModel.getUserCheckUsername({ username });
     if (results.length < 1) {
-      const results = await userModel.getUserCheckUsername({ username });
-      if (results.length < 1) {
-        const salt = await bcrypt.genSalt(10);
-        const password = await bcrypt.hash(rawPassword, salt);
-        const result = await userModel.register({ name, email, username, password });
-        await userModel.registerByUsername(username);
-        if (result.affectedRows >= 1) {
-          return res.send({
-            success: true,
-            message: 'Register Success!',
-          });
-        } else {
-          return res.status(500).send({
-            success: false,
-            message: 'Register Failed!'
-          });
-        }
+      const salt = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash(rawPassword, salt);
+      const result = await userModel.register({ name, email, username, password });
+      await userModel.registerByUsername(username);
+      if (result.affectedRows >= 1) {
+        return res.send({
+          success: true,
+          message: 'Register Success!',
+        });
       } else {
-        return res.status(400).send({
+        return res.status(500).send({
           success: false,
-          message: 'Username already used!'
+          message: 'Register Failed!'
         });
       }
     } else {
       return res.status(400).send({
         success: false,
-        message: 'Email already used!'
+        message: 'Username already used!'
       });
     }
   } else {
     return res.status(400).send({
       success: false,
-      message: 'Name already used!'
+      message: 'Email already used!'
     });
   }
 };
@@ -107,7 +99,7 @@ exports.forgotPassword = async (req, res) => {
         const info = await mail.sendMail({
           from: APP_EMAIL,
           to: email,
-          subject: 'Reset Your Password | Backend Beginner',
+          subject: 'Reset Password | Vehicle Rent',
           text: String(randomCode),
           html: `<b> This is ${randomCode} your code for reset your password! DO NOT GIVE THIS CODE TO OTHERS!</b>`
         });
