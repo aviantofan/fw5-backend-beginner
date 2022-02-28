@@ -3,11 +3,12 @@ const { APP_URL } = process.env;
 const upload = require('../helpers/upload').single('image');
 
 exports.getPopulars = (req, res) => {
-  let { page, limit } = req.query;
+  let { search, page, limit } = req.query;
+  search = search || '';
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 5;
   const offset = (page - 1) * limit;
-  const fin = { page, limit, offset };
+  const fin = { search, page, limit, offset };
   vehicleModel.getPopulars(fin, results => {
     const processedResult = results.map((obj) => {
       if (obj.image !== null) {
@@ -25,8 +26,8 @@ exports.getPopulars = (req, res) => {
           message: 'List Populars',
           results: results,
           pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehicles?page=${page + 1}` : null,
+            prev: page > 1 ? `http://localhost:5000/vehicles/p/populars?page=${page - 1}&limit=${limit}` : null,
+            next: page < last ? `http://localhost:5000/vehicles/p/populars?page=${page + 1}&limit=${limit}` : null,
             totalData: total,
             currentPage: page,
             lastPage: last
@@ -37,8 +38,8 @@ exports.getPopulars = (req, res) => {
           success: false,
           message: 'Populars list not found',
           pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehicles?page=${page + 1}` : null,
+            prev: page > 1 ? `http://localhost:5000/vehicles/p/populars?page=${page - 1}` : null,
+            next: page < last ? `http://localhost:5000/vehicles/p/populars?page=${page + 1}` : null,
             totalData: total,
             currentPage: page,
             lastPage: last
@@ -50,13 +51,14 @@ exports.getPopulars = (req, res) => {
 };
 
 exports.getVehicles = (req, res) => {
-  let { name, location, page, limit } = req.query;
+  let { name, location, categoryId, page, limit } = req.query;
   name = name || '';
   location = location || '';
+  categoryId = categoryId || '';
   page = parseInt(page) || 1;
-  limit = parseInt(limit) || 5;
+  limit = parseInt(limit) || 4;
   const offset = (page - 1) * limit;
-  const fin = { name, location, page, limit, offset };
+  const fin = { name, location, categoryId, page, limit, offset };
   vehicleModel.getVehicles(fin, results => {
     const processedResult = results.map((obj) => {
       if (obj.image !== null) {
@@ -74,8 +76,8 @@ exports.getVehicles = (req, res) => {
           message: 'List Vehicles',
           results: results,
           pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehicles?page=${page + 1}` : null,
+            prev: page > 1 ? `http://localhost:5000/vehicles?page=${page - 1}` : null,
+            next: page < last ? `http://localhost:5000/vehicles?page=${page + 1}` : null,
             totalData: total,
             currentPage: page,
             lastPage: last
@@ -86,8 +88,8 @@ exports.getVehicles = (req, res) => {
           success: false,
           message: 'Vehicles list not found',
           pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehicles?page=${page + 1}` : null,
+            prev: page > 1 ? `http://localhost:5000/vehicles?page=${page - 1}` : null,
+            next: page < last ? `http://localhost:5000/vehicles?page=${page + 1}` : null,
             totalData: total,
             currentPage: page,
             lastPage: last
@@ -99,15 +101,21 @@ exports.getVehicles = (req, res) => {
 };
 
 exports.getVehiclesCategory = (req, res) => {
-  let { name, location, categoryName, page, limit } = req.query;
+  let { name, location, categoryId, page, limit } = req.query;
   name = name || '';
   location = location || '';
-  categoryName = categoryName || '';
+  categoryId = categoryId || '';
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 5;
   const offset = (page - 1) * limit;
-  const fin = { name, location, categoryName, page, limit, offset };
+  const fin = { name, location, categoryId, page, limit, offset };
   vehicleModel.getVehiclesCategory(fin, results => {
+    results.map((obj) => {
+      if (obj.image !== null) {
+        obj.image = `${APP_URL}/${obj.image}`;
+      }
+      return obj;
+    });
     vehicleModel.countVehicles(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
@@ -117,8 +125,8 @@ exports.getVehiclesCategory = (req, res) => {
           message: 'List Vehicles Category',
           results: results,
           pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehiclesCategory?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehiclesCategory?page=${page + 1}` : null,
+            prev: page > 1 ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page - 1}&limit=${limit}` : null,
+            next: page < last ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page + 1}&limit=${limit}` : null,
             totalData: total,
             currentPage: page,
             lastPage: last
@@ -129,8 +137,8 @@ exports.getVehiclesCategory = (req, res) => {
           success: false,
           message: 'Vehicles Category list not found',
           pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehiclesCategory?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehiclesCategory?page=${page + 1}` : null,
+            prev: page > 1 ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page - 1}&limit=${limit}` : null,
+            next: page < last ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page + 1}&limit=${limit}` : null,
             totalData: total,
             currentPage: page,
             lastPage: last

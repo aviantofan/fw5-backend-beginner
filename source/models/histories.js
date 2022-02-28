@@ -1,7 +1,7 @@
 const db = require('../helpers/db');
 
 exports.countHistories = (fin, cb) => {
-  db.query(`SELECT COUNT(*) as total FROM histories h LEFT JOIN users u ON h.userId = u.id LEFT JOIN vehicles v ON h.vehicleId = V.id WHERE u.name LIKE '%${fin.userName}%' AND v.name LIKE '%${fin.vehicleName}%' LIMIT ${fin.limit}` , (err, res) => {
+  db.query(`SELECT COUNT(*) as total FROM histories h LEFT JOIN users u ON h.userId = u.id LEFT JOIN vehicles v ON h.vehicleId = V.id WHERE u.name LIKE '%${fin.userName}%' AND v.name LIKE '%${fin.vehicleName}%' LIMIT ${fin.limit}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });
@@ -21,9 +21,9 @@ exports.getHistory = (id, cb) => {
   });
 };
 
-exports.postHistory = (data, cb) =>{
+exports.postHistory = (data, cb) => {
   db.query('INSERT INTO histories SET ?', data, (err, res) => {
-    if(err) throw err;
+    if (err) throw err;
     cb(res);
   });
   return (db);
@@ -34,18 +34,18 @@ exports.patchHistory = (data, id, cb) => {
     if (err) throw err;
     cb(res);
   });
-  return(db);
+  return (db);
 };
 
 exports.deleteHistory = (id, cb) => {
-  db.query('DELETE FROM histories WHERE id = ?',[id], (err, res)=>{
-    if(err) throw err;
+  db.query('DELETE FROM histories WHERE id = ?', [id], (err, res) => {
+    if (err) throw err;
     cb(res);
   });
 };
 
 exports.popularBasedonMonth = (data, cb) => {
-  db.query(`SELECT COUNT(*) AS mostPopular, h.vehicleId AS idVehicle, v.name AS vehicleName, c.name AS Category, MONTH(h.createdAt) AS Month FROM histories h LEFT JOIN vehicles v ON v.id = h.vehicleId LEFT JOIN categories c ON v.categoryId=c.id WHERE MONTH(h.createdAt) = '${data.month}' AND YEAR(h.createdAt) = '${data.year}' GROUP BY h.vehicleId ORDER BY COUNT(*) DESC`, (err, res) => {
+  db.query(`SELECT COUNT(*) AS mostPopular, h.vehicleId AS idVehicle, v.name AS vehicleName, c.name AS Category, MONTH(h.rentStartDate) AS Month FROM histories h LEFT JOIN vehicles v ON v.id = h.vehicleId LEFT JOIN categories c ON v.categoryId=c.id WHERE MONTH(h.rentStartDate) = '${data.month}' AND YEAR(h.rentStartDate) = '${data.year}' GROUP BY h.vehicleId ORDER BY COUNT(*) DESC`, (err, res) => {
     if (err) throw err;
     cb(res);
   });

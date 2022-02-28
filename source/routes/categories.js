@@ -3,7 +3,7 @@ const categories = require('express').Router();
 const { getCategories, getCategory, postCategory, patchCategory, deleteCategory } = require('../controllers/categories');
 const { verifyUser } = require('../helpers/auth');
 
-categories.get('/', verifyUser, getCategories);
+categories.get('/', getCategories);
 categories.post('/', verifyUser, postCategory);
 categories.get('/:id', verifyUser, getCategory);
 categories.patch('/:id', verifyUser, patchCategory);
