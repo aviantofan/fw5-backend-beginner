@@ -82,15 +82,15 @@ exports.deleteUser = (id, cb) => {
 };
 
 exports.register = (data) => new Promise((resolve, reject) => {
-  db.query(`INSERT INTO users (name, email,  username, password) VALUES ('${data.name}', '${data.email}', '${data.username}', '${data.password}')`,
+  db.query(`INSERT INTO users (name, email, password) VALUES ('${data.name}', '${data.email}', '${data.password}')`,
     (err, res) => {
       if (err) reject(err);
       resolve(res);
     });
 });
 
-exports.registerByUsername = (username) => new Promise((resolve, reject) => {
-  db.query('SELECT id, email, username, password FROM users WHERE username = ? OR email = ?', [username, username], (err, res) => {
+exports.registerByEmail = (email) => new Promise((resolve, reject) => {
+  db.query('SELECT id, email, password FROM users WHERE email = ?', [email], (err, res) => {
     if (err) reject(err);
     resolve(res);
   });
