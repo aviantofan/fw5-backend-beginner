@@ -5,9 +5,8 @@ const { verifyUser } = require('../helpers/auth');
 
 users.get('/', verifyUser, getUsers);
 users.get('/:id', verifyUser, getUser);
-users.patch('/profile/:id', verifyUser, patchUser);
+users.patch('/:id', verifyUser, patchUser);
 users.delete('/:id', verifyUser, deleteUser);
-users.post('/profile/:id', verifyUser, postUser);
-users.get('/profile/:id', verifyUser, getUser);
+users.post('/:id', verifyUser, postUser);
 
 module.exports = users;

@@ -59,8 +59,8 @@ exports.postUser = (data) => new Promise((resolve, reject) => {
     });
 });
 
-exports.getUserByUsername = (username) => new Promise((resolve, reject) => {
-  db.query('SELECT id, username, password FROM users WHERE username=? OR email=?', [username, username], (err, res) => {
+exports.getEmailByEmail = (email) => new Promise((resolve, reject) => {
+  db.query('SELECT id, email, password FROM users WHERE email=? OR email=?', [email, email], (err, res) => {
     if (err) reject(err);
     resolve(res);
   });

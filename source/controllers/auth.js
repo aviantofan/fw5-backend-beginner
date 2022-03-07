@@ -7,8 +7,8 @@ const mail = require('../helpers/mail');
 const { APP_SECRET, APP_EMAIL } = process.env;
 
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
-  const result = await userModel.getUserByUsername(username);
+  const { email, password } = req.body;
+  const result = await userModel.getEmailByEmail(email);
   if (result.length === 1) {
     const { password: hash } = result[0];
     const fin = await bcrypt.compare(password, hash);

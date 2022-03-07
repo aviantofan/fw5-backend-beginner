@@ -10,13 +10,12 @@ exports.getPopulars = (req, res) => {
   const offset = (page - 1) * limit;
   const fin = { search, page, limit, offset };
   vehicleModel.getPopulars(fin, results => {
-    const processedResult = results.map((obj) => {
+    results.map((obj) => {
       if (obj.image !== null) {
         obj.image = `${APP_URL}/${obj.image}`;
       }
       return obj;
     });
-    console.log(processedResult);
     vehicleModel.countPopular(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
