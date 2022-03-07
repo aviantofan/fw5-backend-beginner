@@ -8,7 +8,7 @@ exports.getProfiles = (cb) => {
 };
 
 exports.getProfile = (id, cb) => {
-  db.query('SELECT name, gender, email, address, number, birthdate FROM users WHERE id=?', [id], (err, res) => {
+  db.query('SELECT name, gender, email, address, birthdate FROM users WHERE id=?', [id], (err, res) => {
     if (err) throw err;
     cb(res);
   });

@@ -6,6 +6,6 @@ route.use('/users', cors(), require('./users'));
 route.use('/histories', cors(), require('./histories'));
 route.use('/categories', cors(), require('./categories'));
 route.use('/auth', cors(), require('./auth'));
-route.use('/profile', require('./profile'));
+route.use('/profile', cors(), require('./profile'));
 
 module.exports = route;

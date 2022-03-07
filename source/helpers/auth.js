@@ -9,6 +9,7 @@ exports.verifyUser = (req, res, next) => {
     if (token) {
       try {
         const payload = jwt.verify(token, APP_SECRET);
+        req.user = payload;
         if (payload) {
           return next();
         } else {
