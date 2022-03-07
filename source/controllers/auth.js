@@ -83,7 +83,7 @@ exports.verify = (req, res) => {
 exports.forgotPassword = async (req, res) => {
   const { email, code, password, confirmPassword } = req.body;
   if (!code) {
-    const user = await userModel.getUserByUsername(email);
+    const user = await userModel.getEmailByEmail(email);
     if (user.length === 1) {
       const randomCode = Math.floor(Math.pow(10, 6 - 1) + Math.random() * (Math.pow(10, 6) - Math.pow(10, 6 - 1) - 1));
       const reset = await forgotRequestModel.createRequest(user[0].id, randomCode);
