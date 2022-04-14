@@ -21,14 +21,6 @@ exports.getUser = (id, cb) => {
   });
 };
 
-exports.getUserCheckName = (data) => new Promise((resolve, reject) => {
-  db.query('SELECT name FROM users WHERE name = ?', [data.name],
-    (err, res) => {
-      if (err) reject(err);
-      resolve(res);
-    });
-});
-
 exports.getUserCheckEmail = (data) => new Promise((resolve, reject) => {
   db.query('SELECT name FROM users WHERE email = ?', [data.email], (err, res) => {
     if (err) reject(err);
