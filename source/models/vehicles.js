@@ -15,7 +15,7 @@ exports.countPopular = (fin, cb) => {
 };
 
 exports.getPopulars = (fin, cb) => {
-  db.query(`SELECT h.vehicleId, v.image AS image, v.name AS vehicleName, v.loc AS location, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicleId WHERE v.name LIKE '%${fin.search}%' GROUP BY h.vehicleId HAVING COUNT(*) > 3 ORDER BY rentCount DESC LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+  db.query(`SELECT v.id, v.image AS image, v.name AS vehicleName, v.loc AS location, COUNT(*) AS rentCount FROM histories h LEFT JOIN vehicles v ON v.id=h.vehicleId WHERE v.name LIKE '%${fin.search}%' GROUP BY h.vehicleId HAVING COUNT(*) > 3 ORDER BY rentCount DESC LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });
