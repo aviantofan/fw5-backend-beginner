@@ -54,6 +54,13 @@ exports.getUser = (req, res) => {
   }
   if (id > 0) {
     userModel.getUser(id, results => {
+      const processedResult = results.map((obj) => {
+        if (obj.image !== null) {
+          obj.image = `${APP_URL}/${obj.image}`;
+        }
+        return obj;
+      });
+      console.log(processedResult);
       if (results.length > 0) {
         return res.json({
           success: true,
