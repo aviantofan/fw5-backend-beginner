@@ -1,14 +1,21 @@
 const profileModel = require('../models/profile');
+const { APP_URL } = process.env;
 
 const getProfile = (req, res) => {
   const { id } = req.user;
-  console.log(req.user);
-  profileModel.getProfile(id, (result) => {
-    if (result.length > 0) {
+  profileModel.getProfile(id, results => {
+    const processedResult = results.map((obj) => {
+      if (obj.image !== null) {
+        obj.image = `${APP_URL}/${obj.image}`;
+      }
+      return obj;
+    });
+    console.log(processedResult);
+    if (results.length > 0) {
       return res.json({
         success: true,
         message: `User profile with ID: ${id}`,
-        result: result[0]
+        result: results[0]
       });
     } else {
       return res.status(404).send({
