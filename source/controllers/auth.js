@@ -34,22 +34,30 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { name, email, password: rawPassword } = req.body;
+  const { name, username, email, password: rawPassword } = req.body;
   const results = await userModel.getUserCheckEmail({ email });
   if (results.length < 1) {
-    const salt = await bcrypt.genSalt(10);
-    const password = await bcrypt.hash(rawPassword, salt);
-    const result = await userModel.register({ name, email, password });
-    await userModel.registerByEmail(email);
-    if (result.affectedRows >= 1) {
-      return res.send({
-        success: true,
-        message: 'Register Success!',
-      });
+    const results = await userModel.getUserCheckUsername({ username });
+    if (results.length < 1) {
+      const salt = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash(rawPassword, salt);
+      const result = await userModel.register({ name, username, email, password });
+      await userModel.registerByEmail(email);
+      if (result.affectedRows >= 1) {
+        return res.send({
+          success: true,
+          message: 'Register Success!',
+        });
+      } else {
+        return res.status(500).send({
+          success: false,
+          message: 'Register Failed!'
+        });
+      }
     } else {
-      return res.status(500).send({
+      return res.status(400).send({
         success: false,
-        message: 'Register Failed!'
+        message: 'Username already used!'
       });
     }
   } else {
