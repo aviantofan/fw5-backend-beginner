@@ -22,7 +22,7 @@ exports.getPopulars = (fin, cb) => {
 };
 
 exports.getVehicles = (fin, cb) => {
-  db.query(`SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.price*50/100 AS minPrepayment, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' AND c.id LIKE '%${fin.categoryId}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+  db.query(`SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.price*50/100 AS minPrepayment, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' AND c.id LIKE '%${fin.categoryId}%' ORDER BY ${fin.sort} ${fin.order} LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });
@@ -43,7 +43,7 @@ exports.getVehiclesCategory = (fin, cb) => {
 };
 
 exports.getVehicleCheck = (data, cb) => {
-  db.query('SELECT name FROM vehicles WHERE name = ?', [data.name], (err, res) => {
+  db.query('SELECT name, loc, color FROM vehicles WHERE name = ? AND loc =? AND color=?', [data.name, data.loc, data.color], (err, res) => {
     if (err) throw err;
     cb(res);
   });

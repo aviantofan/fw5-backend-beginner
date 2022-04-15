@@ -1,6 +1,8 @@
 const vehicleModel = require('../models/vehicles');
 const { APP_URL } = process.env;
 const upload = require('../helpers/upload').single('image');
+const response = require('../helpers/response');
+const validator = require('validator');
 
 exports.getPopulars = (req, res) => {
   let { search, page, limit } = req.query;
@@ -20,44 +22,32 @@ exports.getPopulars = (req, res) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
-        return res.json({
-          success: true,
-          message: 'List Populars',
-          results: results,
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:5000/vehicles/p/populars?page=${page - 1}&limit=${limit}` : null,
-            next: page < last ? `http://localhost:5000/vehicles/p/populars?page=${page + 1}&limit=${limit}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
-        });
+        return response(res, 'List Populars', results, {
+          prev: page > 1 ? `http://localhost:5000/vehicles/p/populars?page=${page - 1}&limit=${limit}` : null,
+          next: page < last ? `http://localhost:5000/vehicles/p/populars?page=${page + 1}&limit=${limit}` : null,
+          totalData: total,
+          currentPage: page,
+          lastPage: last
+        }
+        );
       } else {
-        return res.status(404).json({
-          success: false,
-          message: 'Populars list not found',
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:5000/vehicles/p/populars?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:5000/vehicles/p/populars?page=${page + 1}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
-        });
+        return response(res, 'Populars list not found', null, null, 404);
       }
     });
   });
 };
 
 exports.getVehicles = (req, res) => {
-  let { name, location, categoryId, page, limit } = req.query;
+  let { name, location, categoryId, sort, order, page, limit } = req.query;
   name = name || '';
   location = location || '';
   categoryId = categoryId || '';
+  sort = sort || 'createdAt';
+  order = order || 'desc';
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 4;
   const offset = (page - 1) * limit;
-  const fin = { name, location, categoryId, page, limit, offset };
+  const fin = { name, location, categoryId, sort, page, order, limit, offset };
   vehicleModel.getVehicles(fin, results => {
     const processedResult = results.map((obj) => {
       if (obj.image !== null) {
@@ -70,30 +60,15 @@ exports.getVehicles = (req, res) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
-        return res.json({
-          success: true,
-          message: 'List Vehicles',
-          results: results,
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:5000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:5000/vehicles?page=${page + 1}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
+        return response(res, 'List Vehicles', results, {
+          prev: page > 1 ? `http://localhost:5000/vehicles?page=${page - 1}` : null,
+          next: page < last ? `http://localhost:5000/vehicles?page=${page + 1}` : null,
+          totalData: total,
+          currentPage: page,
+          lastPage: last
         });
       } else {
-        return res.status(404).json({
-          success: false,
-          message: 'Vehicles list not found',
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:5000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:5000/vehicles?page=${page + 1}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
-        });
+        return response(res, 'Vehicles list not found', null, null, 404);
       }
     });
   });
@@ -119,86 +94,51 @@ exports.getVehiclesCategory = (req, res) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
-        return res.json({
-          success: true,
-          message: 'List Vehicles Category',
-          results: results,
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page - 1}&limit=${limit}` : null,
-            next: page < last ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page + 1}&limit=${limit}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
-        });
+        return response(res, 'List Vehicles Category', results, {
+          prev: page > 1 ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page - 1}&limit=${limit}` : null,
+          next: page < last ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page + 1}&limit=${limit}` : null,
+          totalData: total,
+          currentPage: page,
+          lastPage: last
+        }
+        );
       } else {
-        return res.status(404).json({
-          success: false,
-          message: 'Vehicles Category list not found',
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page - 1}&limit=${limit}` : null,
-            next: page < last ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page + 1}&limit=${limit}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
-        });
+        return response(res, 'Vehicles Category list not found', null, null, 404);
       }
     });
   });
 };
 
 exports.getVehicle = (req, res) => {
-  const id = parseInt(req.params.id) || null;
-  if (!id) {
-    return res.status(400).send({
-      success: false,
-      message: 'Invalid input, Id must be number!'
-    });
-  }
-  if (id == '') {
-    return res.status(400).send({
-      success: false,
-      message: 'Id cannot empty!'
-    });
-  }
-  if (id > 0) {
-    vehicleModel.getVehicle(id, results => {
-      const processedResult = results.map((obj) => {
-        if (obj.image !== null) {
-          obj.image = `${APP_URL}/${obj.image}`;
+  const { id } = req.params;
+  if (validator.isInt(id)) {
+    if (id > 0) {
+      vehicleModel.getVehicle(id, results => {
+        const processedResult = results.map((obj) => {
+          if (obj.image !== null) {
+            obj.image = `${APP_URL}/${obj.image}`;
+          }
+          return obj;
+        });
+        console.log(processedResult);
+        if (results.length > 0) {
+          return response(res, 'Detail Vehicle', results[0], null);
+        } else {
+          return response(res, `Vehicle with ID: ${id} not found`, null, null, 404);
         }
-        return obj;
       });
-      console.log(processedResult);
-      if (results.length > 0) {
-        return res.json({
-          success: true,
-          message: 'Detail Vehicle',
-          results: results[0]
-        });
-      } else {
-        return res.status(404).json({
-          success: false,
-          message: `Vehicle with ID: ${id} not found`
-        });
-      }
-    });
+    } else {
+      return response(res, 'Id should be a number greater than 0', null, null, 400);
+    }
   } else {
-    return res.status(400).send({
-      success: false,
-      message: 'Id should be a number greater than 0'
-    });
+    return response(res, 'Invalid input, Id must be number!', null, null, 400);
   }
 };
 
 exports.postVehicle = (req, res) => {
   upload(req, res, function (err) {
     if (err) {
-      return res.status(400).json({
-        success: false,
-        message: err.message
-      });
+      return response(res, err.message, null, null, 400);
     }
     const data = {
       name: req.body.name,
@@ -206,217 +146,169 @@ exports.postVehicle = (req, res) => {
       loc: req.body.loc,
       isAvailable: req.body.isAvailable,
       isPrepay: req.body.isPrepay,
-      capacity: parseInt(req.body.capacity) || null,
-      categoryId: parseInt(req.body.categoryId) || null,
+      capacity: req.body.capacity,
+      categoryId: req.body.categoryId,
       reservationBefore: req.body.reservationBefore,
-      price: parseInt(req.body.price) || null,
+      price: req.body.price,
       qty: req.body.qty
     };
-    if (!data.capacity) {
-      return res.status(400).send({
-        success: false,
-        message: 'Invalid input, Capacity must be a Number!'
-      });
+    if (validator.isEmpty(data.name)) {
+      return response(res, 'Name cannot empty!', null, null, 400);
     }
-    if (!data.categoryId) {
-      return res.status(400).send({
-        success: false,
-        message: 'Invalid input, Category_id must be a Number!'
-      });
+    if (validator.isEmpty(data.color)) {
+      return response(res, 'Color cannot empty!', null, null, 400);
     }
-    if (!data.price) {
-      return res.status(400).send({
-        success: false,
-        message: 'Invalid input, Price must be a Number!'
-      });
+    if (validator.isEmpty(data.loc)) {
+      return response(res, 'Location cannot empty!', null, null, 400);
     }
-    if (req.file) {
-      data.image = req.file.path;
+    if (validator.isEmpty(data.isAvailable)) {
+      return response(res, 'isAvailable cannot empty!', null, null, 400);
     }
-    vehicleModel.getVehicleCheck(data, results => {
-      if (results.length < 1) {
-        vehicleModel.postVehicle(data, (results => {
-          if (results.affectedRows == 1) {
-            vehicleModel.getVehicle(results.insertId, (temp) => {
-              const mapResults = temp.map(o => {
-                if (o.image !== null) {
-                  o.image = `${APP_URL}/${o.image}`;
+    if (validator.isEmpty(data.isPrepay)) {
+      return response(res, 'isPrepay cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.capacity)) {
+      return response(res, 'capacity cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.categoryId)) {
+      return response(res, 'categoryId cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.reservationBefore)) {
+      return response(res, 'reservationBefore cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.price)) {
+      return response(res, 'price cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.qty)) {
+      return response(res, 'qty cannot empty!', null, null, 400);
+    }
+    if (validator.isInt(data.isAvailable)) {
+      if (validator.isInt(data.isPrepay)) {
+        if (validator.isInt(data.capacity)) {
+          if (validator.isInt(data.categoryId)) {
+            if (validator.isInt(data.price)) {
+              if (validator.isInt(data.qty)) {
+                if (req.file) {
+                  data.image = `uploads/${req.file.filename}`;
                 }
-                return o;
-              });
-              return res.send({
-                success: true,
-                messages: 'Input data vehicle success!',
-                results: mapResults[0]
-              });
-            });
+                vehicleModel.getVehicleCheck(data, results => {
+                  if (results.length < 1) {
+                    vehicleModel.postVehicle(data, (results => {
+                      if (results.affectedRows == 1) {
+                        vehicleModel.getVehicle(results.insertId, (temp) => {
+                          const mapResults = temp.map(o => {
+                            if (o.image !== null) {
+                              o.image = `${APP_URL}/${o.image}`;
+                            }
+                            return o;
+                          });
+                          return response(res, 'Input data vehicle success!', mapResults[0], null);
+                        });
+                      } else {
+                        return response(res, 'Input data vehicle failed!', null, null, 500);
+                      }
+                    }));
+                  } else {
+                    return response(res, 'Data has already inserted!', null, null, 400);
+                  }
+                });
+              } else {
+                return response(res, 'Invalid input, Quantity must be a Number!', null, null, 400);
+              }
+            } else {
+              return response(res, 'Invalid input, Price must be a Number!', null, null, 400);
+            }
           } else {
-            return res.status(500).send({
-              success: false,
-              message: 'Input data vehicle failed!'
-            });
+            return response(res, 'Invalid input, CategoryId must be a Number!', null, null, 400);
           }
-        }));
+        } else {
+          return response(res, 'Invalid input, Capacity must be a Number!', null, null, 400);
+        }
       } else {
-        return res.status(400).send({
-          success: false,
-          message: 'Data has already inserted!'
-        });
+        return response(res, 'Invalid input, isPrepay must be a Number!', null, null, 400);
       }
-    });
+    } else {
+      return response(res, 'Invalid input, isAvailable must be a Number!', null, null, 400);
+    }
   });
 };
 
 exports.patchVehicle = (req, res) => {
-  // const data = {
-  //     name   : req.body.name,
-  //     color : req.body.color,
-  //     loc : req.body.loc,
-  //     isAvailable : req.body.isAvailable,
-  //     isPrepay : req.body.isPrepay,
-  //     capacity : parseInt(req.body.capacity) || null,
-  //     categoryId : parseInt(req.body.categoryId) || null,
-  //     reservationBefore : req.body.reservationBefore,
-  //     price : parseInt(req.body.price) || null,
-  //     qty : req.body.qty
-  // };
-  // if (!data.capacity){
-  //     return res.status(400).send({
-  //         success : false,
-  //         message : 'Invalid input, Capacity must be a Number!'
-  //     });
-  // }
-  // if (!data.categoryId){
-  //     return res.status(400).send({
-  //         success : false,
-  //         message : 'Invalid input, Category_id must be a Number!'
-  //     });
-  // }
-  // if (!data.price){
-  //     return res.status(400).send({
-  //         success : false,
-  //         message : 'Invalid input, Price must be a Number!'
-  //     });
-  // }
   upload(req, res, function (err) {
     if (err) {
-      return res.status(400).json({
-        success: false,
-        message: err.message
-      });
+      return response(res, err.message, null, null, 400);
     }
-    const id = parseInt(req.params.id) || null;
-    if (!id) {
-      return res.status(400).send({
-        success: false,
-        message: 'Invalid input, Id must be number!'
-      });
-    }
-    if (id == '') {
-      return res.status(400).send({
-        success: false,
-        message: 'Id cannot empty!'
-      });
-    }
-    if (id > 0) {
-      vehicleModel.getVehicle(id, (results => {
-        if (results.length > 0) {
-          const data = {};
-          const fillable = ['name', 'color', 'loc', 'isAvailable', 'isPrepay', 'capacity', 'reservationBefore', 'price', 'qty'];
-          fillable.forEach(field => {
-            data[field] = req.body[field];
-          });
-          if (req.file) {
-            data.image = req.file.path;
-          }
-          console.log(data);
-          vehicleModel.patchVehicle(data, id, (results => {
-            if (results.affectedRows == 1) {
-              vehicleModel.getVehicle(id, (temp) => {
-                const mapResults = temp.map(o => {
-                  if (o.image !== null) {
-                    o.image = `${APP_URL}/${o.image}`;
-                  }
-                  return o;
-                });
-                return res.send({
-                  success: true,
-                  messages: 'Updated data vehicle success!',
-                  results: mapResults[0]
-                });
+    const id = req.params.id;
+    if (validator.isInt(id)) {
+      if (!validator.isEmpty(id)) {
+        if (id > 0) {
+          vehicleModel.getVehicle(id, (results => {
+            if (results.length > 0) {
+              const data = {};
+              const fillable = ['name', 'color', 'loc', 'isAvailable', 'isPrepay', 'capacity', 'reservationBefore', 'price', 'qty'];
+              fillable.forEach(field => {
+                if (req.body[field]) {
+                  data[field] = req.body[field];
+                }
               });
+              if (req.file) {
+                data.image = req.file.path;
+              }
+              console.log(data);
+              vehicleModel.patchVehicle(data, id, (results => {
+                if (results.affectedRows == 1) {
+                  vehicleModel.getVehicle(id, (temp) => {
+                    const mapResults = temp.map(o => {
+                      if (o.image !== null) {
+                        o.image = `${APP_URL}/${o.image}`;
+                      }
+                      return o;
+                    });
+                    return response(res, 'Updated data vehicle success!', mapResults[0], null);
+                  });
+                } else {
+                  return response(res, 'Data vehicle updated failed!', null, null, 500);
+                }
+              }));
             } else {
-              return res.status(500).send({
-                success: false,
-                message: 'Data vehicle updated failed!'
-              });
+              return response(res, `Vehicle with ID : ${id} not found`, null, null, 404);
             }
           }));
         } else {
-          return res.status(404).json({
-            success: false,
-            message: `Vehicle with ID : ${id} not found`
-          });
+          return response(res, 'Id should be a number greater than 0', null, null, 400);
         }
-      }));
+      } else { return response(res, 'Id cannot empty!', null, null, 400); }
     } else {
-      return res.status(400).send({
-        success: false,
-        message: 'Id should be a number greater than 0'
-      });
+      return response(res, 'Invalid input, Id must be number!', null, null, 400);
     }
   });
 };
 
 exports.deleteVehicle = (req, res) => {
-  const id = parseInt(req.params.id) || null;
-  if (!id) {
-    return res.status(400).send({
-      success: false,
-      message: 'Invalid input, Id must be number!'
-    });
-  }
-  if (id == '') {
-    return res.status(400).send({
-      success: false,
-      message: 'Id cannot empty!'
-    });
-  }
-  vehicleModel.getVehicle(id, (results => {
-    if (id !== null && id !== undefined) {
-      if (id > 0) {
-        if (results.length > 0) {
-          vehicleModel.deleteVehicle(id, (results => {
-            if (results.affectedRows == 1) {
-              return res.send({
-                success: true,
-                message: 'Data vehicle deleted success!'
-              });
-            } else {
-              return res.status(500).send({
-                success: false,
-                message: 'Data vehicle delete failed!'
-              });
-            }
-          }));
+  const id = req.params.id;
+  if (!validator.isEmpty(id)) {
+    if (validator.isInt(id)) {
+      vehicleModel.getVehicle(id, (results => {
+        if (id > 0) {
+          if (results.length > 0) {
+            vehicleModel.deleteVehicle(id, (results => {
+              if (results.affectedRows > 0) {
+                return response(res, 'Data vehicle deleted success!', results, null,);
+              } else {
+                return response(res, 'Data vehicle delete failed!', null, null, 500);
+              }
+            }));
+          } else {
+            return response(res, `Vehicle with ID : ${id} not found`, null, null, 404);
+          }
         } else {
-          return res.status(404).json({
-            success: false,
-            message: `Vehicle with ID : ${id} not found`
-          });
+          return response(res, 'Id should be a number greater than 0', null, null, 400);
         }
-      } else {
-        return res.status(400).send({
-          success: false,
-          message: 'Id should be a number greater than 0'
-        });
-      }
+      }));
     } else {
-      return res.status(400).send({
-        success: false,
-        message: 'Undefined Id'
-      });
+      return response(res, 'Invalid input, Id must be number!', null, null, 400);
     }
-
-  }));
+  } else {
+    return response(res, 'Id cannot empty!', null, null, 400);
+  }
 };
