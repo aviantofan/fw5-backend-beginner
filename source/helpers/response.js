@@ -1,17 +1,19 @@
-const response = (res, message, results, stats=200)=> {
+const response = (res, message, results, pageInfo, stats = 200) => {
   let success = true;
-  if(stats){
-    if(stats >= 400){
+  if (stats) {
+    if (stats >= 400) {
       success = false;
     }
   }
-  
+
   let data = {
     success,
-    message
+    message,
+
   };
 
-  if(results){
+  if (results) {
+    data.pageInfo = pageInfo;
     data.results = results;
   }
   return res.status(stats).json(data);
