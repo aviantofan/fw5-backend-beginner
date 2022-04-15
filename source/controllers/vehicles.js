@@ -103,12 +103,14 @@ exports.postVehicle = (req, res) => {
 };
 
 exports.getPopulars = (req, res) => {
-  let { search, page, limit } = req.query;
+  let { search, page, sort, order, limit } = req.query;
   search = search || '';
+  sort = sort || 'createdAt';
+  order = order || 'desc';
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 5;
   const offset = (page - 1) * limit;
-  const fin = { search, page, limit, offset };
+  const fin = { search, page, sort, order, limit, offset };
   vehicleModel.getPopulars(fin, results => {
     results.map((obj) => {
       if (obj.image !== null) {
@@ -252,7 +254,7 @@ exports.patchVehicle = (req, res) => {
                 }
               });
               if (req.file) {
-                data.image = req.file.path;
+                data.image = `uploads/${req.file.filename}`;
               }
               console.log(data);
               vehicleModel.patchVehicle(data, id, (results => {
@@ -293,7 +295,7 @@ exports.deleteVehicle = (req, res) => {
           if (results.length > 0) {
             vehicleModel.deleteVehicle(id, (results => {
               if (results.affectedRows > 0) {
-                return response(res, 'Data vehicle deleted success!', results, null,);
+                return response(res, 'Data vehicle deleted success!', null, null,);
               } else {
                 return response(res, 'Data vehicle delete failed!', null, null, 500);
               }
