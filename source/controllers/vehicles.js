@@ -4,6 +4,104 @@ const upload = require('../helpers/upload').single('image');
 const response = require('../helpers/response');
 const validator = require('validator');
 
+exports.postVehicle = (req, res) => {
+  upload(req, res, function (err) {
+    if (err) {
+      return response(res, err.message, null, null, 400);
+    }
+    const data = {
+      name: req.body.name,
+      color: req.body.color,
+      loc: req.body.loc,
+      isAvailable: req.body.isAvailable,
+      isPrepay: req.body.isPrepay,
+      capacity: req.body.capacity,
+      categoryId: req.body.categoryId,
+      reservationBefore: req.body.reservationBefore,
+      price: req.body.price,
+      qty: req.body.qty
+    };
+    if (validator.isEmpty(data.name)) {
+      return response(res, 'Name cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.color)) {
+      return response(res, 'Color cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.loc)) {
+      return response(res, 'Location cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.isAvailable)) {
+      return response(res, 'isAvailable cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.isPrepay)) {
+      return response(res, 'isPrepay cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.capacity)) {
+      return response(res, 'capacity cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.categoryId)) {
+      return response(res, 'categoryId cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.reservationBefore)) {
+      return response(res, 'reservationBefore cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.price)) {
+      return response(res, 'price cannot empty!', null, null, 400);
+    }
+    if (validator.isEmpty(data.qty)) {
+      return response(res, 'qty cannot empty!', null, null, 400);
+    }
+    if (validator.isInt(data.isAvailable)) {
+      if (validator.isInt(data.isPrepay)) {
+        if (validator.isInt(data.capacity)) {
+          if (validator.isInt(data.categoryId)) {
+            if (validator.isInt(data.price)) {
+              if (validator.isInt(data.qty)) {
+                if (req.file) {
+                  data.image = `uploads/${req.file.filename}`;
+                }
+                vehicleModel.getVehicleCheck(data, results => {
+                  if (results.length < 1) {
+                    vehicleModel.postVehicle(data, (results => {
+                      if (results.affectedRows == 1) {
+                        vehicleModel.getVehicle(results.insertId, (temp) => {
+                          const mapResults = temp.map(o => {
+                            if (o.image !== null) {
+                              o.image = `${APP_URL}/${o.image}`;
+                            }
+                            return o;
+                          });
+                          return response(res, 'Input data vehicle success!', mapResults[0], null);
+                        });
+                      } else {
+                        return response(res, 'Input data vehicle failed!', null, null, 500);
+                      }
+                    }));
+                  } else {
+                    return response(res, 'Data has already inserted!', null, null, 400);
+                  }
+                });
+              } else {
+                return response(res, 'Invalid input, Quantity must be a Number!', null, null, 400);
+              }
+            } else {
+              return response(res, 'Invalid input, Price must be a Number!', null, null, 400);
+            }
+          } else {
+            return response(res, 'Invalid input, CategoryId must be a Number!', null, null, 400);
+          }
+        } else {
+          return response(res, 'Invalid input, Capacity must be a Number!', null, null, 400);
+        }
+      } else {
+        return response(res, 'Invalid input, isPrepay must be a Number!', null, null, 400);
+      }
+    } else {
+      return response(res, 'Invalid input, isAvailable must be a Number!', null, null, 400);
+    }
+  });
+};
+
 exports.getPopulars = (req, res) => {
   let { search, page, limit } = req.query;
   search = search || '';
@@ -133,104 +231,6 @@ exports.getVehicle = (req, res) => {
   } else {
     return response(res, 'Invalid input, Id must be number!', null, null, 400);
   }
-};
-
-exports.postVehicle = (req, res) => {
-  upload(req, res, function (err) {
-    if (err) {
-      return response(res, err.message, null, null, 400);
-    }
-    const data = {
-      name: req.body.name,
-      color: req.body.color,
-      loc: req.body.loc,
-      isAvailable: req.body.isAvailable,
-      isPrepay: req.body.isPrepay,
-      capacity: req.body.capacity,
-      categoryId: req.body.categoryId,
-      reservationBefore: req.body.reservationBefore,
-      price: req.body.price,
-      qty: req.body.qty
-    };
-    if (validator.isEmpty(data.name)) {
-      return response(res, 'Name cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.color)) {
-      return response(res, 'Color cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.loc)) {
-      return response(res, 'Location cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.isAvailable)) {
-      return response(res, 'isAvailable cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.isPrepay)) {
-      return response(res, 'isPrepay cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.capacity)) {
-      return response(res, 'capacity cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.categoryId)) {
-      return response(res, 'categoryId cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.reservationBefore)) {
-      return response(res, 'reservationBefore cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.price)) {
-      return response(res, 'price cannot empty!', null, null, 400);
-    }
-    if (validator.isEmpty(data.qty)) {
-      return response(res, 'qty cannot empty!', null, null, 400);
-    }
-    if (validator.isInt(data.isAvailable)) {
-      if (validator.isInt(data.isPrepay)) {
-        if (validator.isInt(data.capacity)) {
-          if (validator.isInt(data.categoryId)) {
-            if (validator.isInt(data.price)) {
-              if (validator.isInt(data.qty)) {
-                if (req.file) {
-                  data.image = `uploads/${req.file.filename}`;
-                }
-                vehicleModel.getVehicleCheck(data, results => {
-                  if (results.length < 1) {
-                    vehicleModel.postVehicle(data, (results => {
-                      if (results.affectedRows == 1) {
-                        vehicleModel.getVehicle(results.insertId, (temp) => {
-                          const mapResults = temp.map(o => {
-                            if (o.image !== null) {
-                              o.image = `${APP_URL}/${o.image}`;
-                            }
-                            return o;
-                          });
-                          return response(res, 'Input data vehicle success!', mapResults[0], null);
-                        });
-                      } else {
-                        return response(res, 'Input data vehicle failed!', null, null, 500);
-                      }
-                    }));
-                  } else {
-                    return response(res, 'Data has already inserted!', null, null, 400);
-                  }
-                });
-              } else {
-                return response(res, 'Invalid input, Quantity must be a Number!', null, null, 400);
-              }
-            } else {
-              return response(res, 'Invalid input, Price must be a Number!', null, null, 400);
-            }
-          } else {
-            return response(res, 'Invalid input, CategoryId must be a Number!', null, null, 400);
-          }
-        } else {
-          return response(res, 'Invalid input, Capacity must be a Number!', null, null, 400);
-        }
-      } else {
-        return response(res, 'Invalid input, isPrepay must be a Number!', null, null, 400);
-      }
-    } else {
-      return response(res, 'Invalid input, isAvailable must be a Number!', null, null, 400);
-    }
-  });
 };
 
 exports.patchVehicle = (req, res) => {
