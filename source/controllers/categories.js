@@ -1,6 +1,31 @@
 const categoryModel = require('../models/categories');
-const { APP_URL } = process.env;
-const upload = require('../helpers/upload').single('image');
+const response = require('../helpers/response');
+const validator = require('validator');
+
+exports.postCategory = (req, res) => {
+  const data = {
+    name: req.body.name
+  };
+  if (!validator.isEmpty(data.name)) {
+    categoryModel.getCategoryCheck(data, results => {
+      if (results.length < 1) {
+        categoryModel.postCategory(data, (results => {
+          if (results.affectedRows == 1) {
+            categoryModel.getCategory(results.insertId, (results) => {
+              return response(res, 'Input data category success!', results[0], null);
+            });
+          } else {
+            return response(res, 'Input data category failed!', null, null, 500);
+          }
+        }));
+      } else {
+        return response(res, 'Data has already inserted!', null, null, 400);
+      }
+    });
+  } else {
+    return response(res, 'Name cannot empty!', null, null, 400);
+  }
+};
 
 exports.getCategories = (req, res) => {
   let { name, page, limit } = req.query;
@@ -10,248 +35,111 @@ exports.getCategories = (req, res) => {
   const offset = (page - 1) * limit;
   const fin = { name, page, limit, offset };
   categoryModel.getCategories(fin, results => {
-    const processedResult = results.map((obj) => {
-      if (obj.image !== null) {
-        obj.image = `${APP_URL}/${obj.image}`;
-      }
-      return obj;
-    });
-    console.log(processedResult);
     categoryModel.countCategories(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
-        return res.json({
-          success: true,
-          message: 'List Categories',
-          results: results,
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehicles?page=${page + 1}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
+        return response(res, 'List Categories', results, {
+          prev: page > 1 ? `http://localhost:50000/categories?page=${page - 1}` : null,
+          next: page < last ? `http://localhost:5000/categories?page=${page + 1}` : null,
+          totalData: total,
+          currentPage: page,
+          lastPage: last
         });
       } else {
-        return res.status(404).json({
-          success: false,
-          message: 'Categories list not found',
-          pageInfo: {
-            prev: page > 1 ? `http://localhost:3000/vehicles?page=${page - 1}` : null,
-            next: page < last ? `http://localhost:3000/vehicles?page=${page + 1}` : null,
-            totalData: total,
-            currentPage: page,
-            lastPage: last
-          }
-        });
+        return response(res, 'Categories list not found', null, 404);
       }
     });
   });
 };
 
 exports.getCategory = (req, res) => {
-  const id = parseInt(req.params.id);
-  if (!id) {
-    return res.status(400).send({
-      success: false,
-      message: 'Invalid input, Id must be number!'
-    });
-  }
-  if (id == '') {
-    return res.status(400).send({
-      success: false,
-      message: 'Id cannot empty!'
-    });
-  }
-  if (id > 0) {
-    categoryModel.getCategory(id, results => {
-      if (results.length > 0) {
-        return res.json({
-          success: true,
-          message: 'Detail Category',
-          results: results[0]
-        });
-      } else {
-        return res.status(404).json({
-          success: false,
-          message: `category with ID: ${id} not found`
-        });
-      }
-    });
-  } else {
-    return res.status(400).send({
-      success: false,
-      message: 'Id should be a number greater than 0'
-    });
-  }
-};
-
-exports.postCategory = (req, res) => {
-  upload(req, res, function (err) {
-    if (err) {
-      return res.status(400).json({
-        success: false,
-        message: err.message
-      });
-    }
-    const data = {
-      name: req.body.name
-    };
-    if (req.file) {
-      data.image = req.file.path;
-    }
-    categoryModel.getCategoryCheck(data, results => {
-      if (results.length < 1) {
-        categoryModel.postCategory(data, (results => {
-          if (results.affectedRows == 1) {
-            categoryModel.getCategory(results.insertId, (temp) => {
-              const mapResults = temp.map(o => {
-                if (o.image !== null) {
-                  o.image = `${APP_URL}/${o.image}`;
-                }
-                return o;
-              });
-              return res.send({
-                success: true,
-                messages: 'Input data category success!',
-                results: mapResults[0]
-              });
-            });
+  const id = req.params.id;
+  if (validator.isInt(id)) {
+    if (!validator.isEmpty(id)) {
+      if (id > 0) {
+        categoryModel.getCategory(id, results => {
+          if (results.length > 0) {
+            return response(res, 'Detail Category', results[0], null);
           } else {
-            return res.status(500).send({
-              success: false,
-              message: 'Input data category failed!'
-            });
+            return response(res, `category with ID: ${id} not found`, null, null, 404);
           }
-        }));
-      } else {
-        return res.status(400).send({
-          success: false,
-          message: 'Data has already inserted!'
         });
+      } else {
+        return response(res, 'Id should be a number greater than 0', null, null, 400);
       }
-    });
-  });
+    } else {
+      return response(res, 'Id cannot empty!', null, null, 400);
+    }
+  } else {
+    return response(res, 'Invalid input, Id must be number!', null, null, 400);
+  }
 };
 
 exports.patchCategory = (req, res) => {
-  // const history = [];
-  // const data = {
-  //   name: req.body.name
-  // };
-  // history.push(data);
-  upload(req, res, function (err) {
-    if (err) {
-      return res.status(400).json({
-        success: false,
-        message: err.message
-      });
-    }
-    const id = parseInt(req.params.id);
-    if (!id) {
-      return res.status(400).send({
-        success: false,
-        message: 'Invalid input, Id must be number!'
-      });
-    }
-    if (id == '') {
-      return res.status(400).send({
-        success: false,
-        message: 'Id cannot empty!'
-      });
-    }
-    if (id > 0) {
-      categoryModel.getCategory(id, (results => {
-        if (results.length > 0) {
-          const data = {};
-          const fillable = ['name'];
-          fillable.forEach(field => {
-            data[field] = req.body[field];
-          });
-          if (req.file) {
-            data.image = req.file.path;
+  const id = req.params.id;
+  if (validator.isInt(id)) {
+    if (!validator.isEmpty(id)) {
+      if (id > 0) {
+        categoryModel.getCategory(id, (results => {
+          if (results.length > 0) {
+            const data = {};
+            const fillable = ['name'];
+            fillable.forEach(field => {
+              if (req.body[field]) {
+                data[field] = req.body[field];
+              }
+            });
+            categoryModel.patchCategory(data, id, (results => {
+              if (results.affectedRows == 1) {
+                categoryModel.getCategory(id, (results => {
+                  return response(res, 'Updated data category success!', results[0], null);
+                }));
+              } else {
+                return response(res, 'Data category updated failed!', null, null, 500);
+              }
+            }));
+          } else {
+            return response(res, 'Category not found', null, null, 404);
           }
-          categoryModel.patchCategory(data, id, (results => {
-            if (results.affectedRows == 1) {
-              categoryModel.getCategory(id, (fin) => {
-                const mapResult = fin.map(o => {
-                  if (o.image !== null) {
-                    o.image = `${APP_URL}/${o.image}`;
-                  }
-                  return o;
-                });
-                return res.send({
-                  success: true,
-                  messages: 'Updated data category success!',
-                  results: mapResult[0]
-                });
-              });
-            } else {
-              return res.status(500).send({
-                success: false,
-                message: 'Data category updated failed!'
-              });
-            }
-          }));
-        } else {
-          return res.status(404).json({
-            success: false,
-            message: 'Category not found'
-          });
-        }
-      }));
+        }));
+      } else {
+        return response(res, 'Id should be a number greater than 0', null, null, 400);
+      }
     } else {
-      return res.status(400).send({
-        success: false,
-        message: 'Id should be a number greater than 0'
-      });
+      return response(res, 'Id cannot empty!', null, null, 400);
     }
-  });
+  } else {
+    return response(res, 'Invalid input, Id must be number!', null, null, 400);
+  }
 };
 
 
 exports.deleteCategory = (req, res) => {
-  const id = parseInt(req.params.id);
-  if (!id) {
-    return res.status(400).send({
-      success: false,
-      message: 'Invalid input, Id must be number!'
-    });
-  }
-  if (id == '') {
-    return res.status(400).send({
-      success: false,
-      message: 'Id cannot empty!'
-    });
-  }
-  if (id > 0) {
-    categoryModel.getCategory(id, (results => {
-      if (results.length > 0) {
-        categoryModel.deleteCategory(id, (results => {
-          if (results.affectedRows == 1) {
-            return res.send({
-              success: true,
-              message: 'Data category deleted success!'
-            });
+  const id = req.params.id;
+  if (validator.isInt(id)) {
+    if (!validator.isEmpty(id)) {
+      if (id > 0) {
+        categoryModel.getCategory(id, (results => {
+          if (results.length > 0) {
+            categoryModel.deleteCategory(id, (results => {
+              if (results.affectedRows == 1) {
+                return response(res, 'Data category deleted success!', null, null);
+              } else {
+                return response(res, 'Data category delete failed!', null, null, 500);
+              }
+            }));
           } else {
-            return res.status(500).send({
-              success: false,
-              message: 'Data category delete failed!'
-            });
+            return response(res, 'category not found', null, null, 404);
           }
         }));
       } else {
-        return res.status(404).json({
-          success: false,
-          message: 'category not found'
-        });
+        return response(res, 'Id should be a number greater than 0', null, null, 400);
       }
-    }));
+    } else {
+      return response(res, 'Id cannot empty!', null, null, 400);
+    }
   } else {
-    return res.status(400).send({
-      success: false,
-      message: 'Id should be a number greater than 0'
-    });
+    return response(res, 'Invalid input, Id must be number!', null, null, 400);
   }
 };
