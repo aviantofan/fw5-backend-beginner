@@ -16,6 +16,9 @@ exports.postUser = (req, res) => {
     phone: req.body.phone,
     birthdate: req.body.birthdate
   };
+  const rules = {
+    minLength: 6
+  };
   if (validator.isEmpty(data.name)) {
     return response(res, 'Name cannot empty!', null, null, 400);
   }
@@ -41,7 +44,7 @@ exports.postUser = (req, res) => {
     return response(res, 'birthdate cannot empty!', null, null, 400);
   }
   if (validator.isEmail(data.email)) {
-    if (validator.isStrongPassword(data.password)) {
+    if (validator.isStrongPassword(data.password, rules)) {
       if (validator.isInt(data.phone)) {
         if (validator.isMobilePhone(data.phone, 'id-ID')) {
           if (validator.isDate(data.birthdate)) {
@@ -70,7 +73,7 @@ exports.postUser = (req, res) => {
         return response(res, 'Invalid input, phone must a number!', null, null, 400);
       }
     } else {
-      return response(res, 'Your password must have 8 characters includes Uppercase, Lowercase, Number, and symbol', null, null, 400);
+      return response(res, 'Your password must have 6 characters includes Uppercase, Lowercase, Number, and symbol', null, null, 400);
     }
   } else {
     return response(res, 'Your email format is wrong!', null, null, 400);

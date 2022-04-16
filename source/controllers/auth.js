@@ -4,67 +4,83 @@ const forgotRequestModel = require('../models/forgotRequest');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mail = require('../helpers/mail');
+const validator = require('validator');
 const { APP_SECRET, APP_EMAIL } = process.env;
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  const result = await userModel.getEmailByEmail(email);
-  if (result.length === 1) {
-    const { password: hash } = result[0];
-    const fin = await bcrypt.compare(password, hash);
-    if (fin) {
-      const token = jwt.sign({ id: result[0].id }, APP_SECRET);
-      return res.json({
-        success: true,
-        message: 'Login Success!',
-        result: { token }
-      });
+  const rules = {
+    minLength: 6
+  };
+  if (validator.isEmpty(email)) {
+    return response(res, 'Email cannot empty!', null, null, 400);
+  }
+  if (validator.isEmpty(password)) {
+    return response(res, 'Password cannot empty!', null, null, 400);
+  }
+  if (validator.isEmail(email)) {
+    if (validator.isStrongPassword(password, rules)) {
+      const result = await userModel.getEmailByEmail(email);
+      if (result.length === 1) {
+        const { password: hash } = result[0];
+        const fin = await bcrypt.compare(password, hash);
+        if (fin) {
+          const token = jwt.sign({ id: result[0].id }, APP_SECRET);
+          return response(res, 'Login Success!', { token }, null);
+        } else {
+          return response(res, 'Wrong username or password!', null, null, 403);
+        }
+      } else {
+        return response(res, 'Wrong username or password!', null, null, 403);
+      }
     } else {
-      return res.status(403).json({
-        success: false,
-        message: 'Wrong username or password!'
-      });
+      return response(res, 'Your password must have 8 characters includes Uppercase, Lowercase, Number, and symbol', null, null, 400);
     }
   } else {
-    return res.status(403).json({
-      success: false,
-      message: 'Wrong username or password!'
-    });
+    return response(res, 'Your email format is wrong!', null, null, 400);
   }
 };
 
 exports.register = async (req, res) => {
   const { name, username, email, password: rawPassword } = req.body;
-  const results = await userModel.getUserCheckEmail({ email });
-  if (results.length < 1) {
-    const results = await userModel.getUserCheckUsername({ username });
-    if (results.length < 1) {
-      const salt = await bcrypt.genSalt(10);
-      const password = await bcrypt.hash(rawPassword, salt);
-      const result = await userModel.register({ name, username, email, password });
-      await userModel.registerByEmail(email);
-      if (result.affectedRows >= 1) {
-        return res.send({
-          success: true,
-          message: 'Register Success!',
-        });
+  const rules = {
+    minLength: 6
+  };
+
+  if (validator.isEmpty(name)) {
+    return response(res, 'Name cannot empty!', null, null, 400);
+  }
+  if (validator.isEmpty(username)) {
+    return response(res, 'Username cannot empty!', null, null, 400);
+  }
+  if (validator.isEmpty(email)) {
+    return response(res, 'Email cannot empty!', null, null, 400);
+  }
+  if (validator.isEmpty(rawPassword)) {
+    return response(res, 'Password cannot empty!', null, null, 400);
+  }
+
+  if (validator.isEmail(email)) {
+    if (validator.isStrongPassword(rawPassword, rules)) {
+      const results = await userModel.getUserCheck({ email, username });
+      if (results.length < 1) {
+        const salt = await bcrypt.genSalt(10);
+        const password = await bcrypt.hash(rawPassword, salt);
+        const result = await userModel.register({ name, username, email, password });
+        await userModel.registerByEmail(email);
+        if (result.affectedRows >= 1) {
+          return response(res, 'Register Success!', null, null);
+        } else {
+          return res.status(500).send(res, 'Register Failed!', null, null);
+        }
       } else {
-        return res.status(500).send({
-          success: false,
-          message: 'Register Failed!'
-        });
+        return res.status(400).send(res, 'Username or email already used!', null, null);
       }
     } else {
-      return res.status(400).send({
-        success: false,
-        message: 'Username already used!'
-      });
+      return response(res, 'Your password must have 6 characters includes Uppercase, Lowercase, Number, and symbol', null, null, 400);
     }
   } else {
-    return res.status(400).send({
-      success: false,
-      message: 'Email already used!'
-    });
+    return response(res, 'Your email format is wrong!', null, null, 400);
   }
 };
 
