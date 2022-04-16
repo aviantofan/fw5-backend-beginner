@@ -86,20 +86,20 @@ exports.register = async (req, res) => {
 
 exports.verify = (req, res) => {
   const auth = req.headers.authorization;
-  if (auth.startsWith('Bearer')) {
+  if (auth?.startsWith('Bearer')) {
     const token = auth.split(' ')[1];
     if (token) {
       try {
         if (jwt.verify(token, APP_SECRET)) {
           return response(res, 'User verified!');
         } else {
-          return response(res, 'User not verified!', null, 403);
+          return response(res, 'User not verified!', null, null, 403);
         }
       } catch (err) {
-        return response(res, 'User not verified!', null, 403);
+        return response(res, 'User not verified!', null, null, 403);
       }
     } else {
-      return response(res, 'Token must be provided!', null, 403);
+      return response(res, 'Token must be provided!', null, null, 403);
     }
   }
 };
@@ -122,7 +122,7 @@ exports.forgotPassword = async (req, res) => {
         console.log(info.messageId);
         return response(res, 'Forgot Password request has been sent to your email!');
       } else {
-        return response(res, 'Unexpected Error', null, 500);
+        return response(res, 'Unexpected Error', null, null, 500);
       }
     } else {
       return response(res, 'If you registered, reset password code will sended to your email!');
@@ -132,7 +132,7 @@ exports.forgotPassword = async (req, res) => {
       const result = await forgotRequestModel.getRequest(code);
       if (result.length === 1) {
         if (result[0].isExpired) {
-          return response(res, 'Expired code', null, 400);
+          return response(res, 'Expired code', null, null, 400);
         }
         const user = await forgotRequestModel.getUser(result[0].userId);
         if (user[0].email === email) {
@@ -145,23 +145,23 @@ exports.forgotPassword = async (req, res) => {
                 await forgotRequestModel.updateRequest({ isExpired: 1 }, result[0].id);
                 return response(res, 'Password has been reset!');
               } else {
-                return response(res, 'Unexpected Error', null, 500);
+                return response(res, 'Unexpected Error', null, null, 500);
               }
             } else {
-              return response(res, 'Confirm password not same as password', null, 400);
+              return response(res, 'Confirm password not same as password', null, null, 400);
             }
           } else {
-            return response(res, 'Password is mandatory!', null, 400);
+            return response(res, 'Password is mandatory!', null, null, 400);
           }
         } else {
           console.log(user);
-          return response(res, 'Invalid Email', null, 400);
+          return response(res, 'Invalid Email', null, null, 400);
         }
       } else {
-        return response(res, 'Invalid code', null, 400);
+        return response(res, 'Invalid code', null, null, 400);
       }
     } else {
-      return response(res, 'You have to provide Confirmation Code', null, 400);
+      return response(res, 'You have to provide Confirmation Code', null, null, 400);
     }
   }
 };
