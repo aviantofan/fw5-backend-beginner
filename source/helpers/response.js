@@ -12,8 +12,11 @@ const response = (res, message, results, pageInfo, stats = 200) => {
 
   };
 
-  if (results) {
+  if (pageInfo) {
     data.pageInfo = pageInfo;
+  }
+
+  if (results) {
     data.results = results;
   }
   return res.status(stats).json(data);
