@@ -1,10 +1,18 @@
-# fw5-backend-beginner
+# Vehicool Backend
 
+## INSTALLATION
+```
+git clone https://github.com/aviantofan/vehicool-backend
+```
+
+```
+npm i
+```
 ## ABOUT
-This is the repository API Backend of vehicleRent
+This is the repository API Backend of vehicool
 
 ## DESCRIPTION
-This is an API programs for vehicleRent, this programs can process data in vehicleRent database by access some endpoints. The endpoints provided to access vehicles, categories, users, and histories.
+This is an API programs for vehicool, this programs can process data in vehicool database by access some endpoints. The endpoints provided to access vehicles, categories, users, and histories.
  
 #### Vehicles Endpoint|
 | METHOD | API | REMARKS |
@@ -51,3 +59,7 @@ This is an API programs for vehicleRent, this programs can process data in vehic
 | ```POST``` | /histories | Create data history|
 | ```PATCH``` | /histories/:id | update data history by id|
 | ```DELETE``` | /histories/:id | delete data history by id|
+
+## DEPLOYMENT BACKEND
+
+www.heroku.com
