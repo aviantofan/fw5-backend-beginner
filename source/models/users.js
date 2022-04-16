@@ -8,7 +8,7 @@ exports.countUsers = (fin, cb) => {
 };
 
 exports.getUsers = (fin, cb) => {
-  db.query(`SELECT * FROM users WHERE name LIKE '%${fin.name}%' AND address LIKE '%${fin.address}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+  db.query(`SELECT * FROM users WHERE name LIKE '%${fin.name}%' AND address LIKE '%${fin.address}%' ORDER BY ${fin.sort} ${fin.order} LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });
@@ -21,19 +21,13 @@ exports.getUser = (id, cb) => {
   });
 };
 
-exports.getUserCheckEmail = (data) => new Promise((resolve, reject) => {
-  db.query('SELECT name FROM users WHERE email = ?', [data.email], (err, res) => {
+exports.getUserCheck = (data) => new Promise((resolve, reject) => {
+  db.query('SELECT email, username FROM users WHERE email = ? AND username=?', [data.email, data.username], (err, res) => {
     if (err) reject(err);
     resolve(res);
   });
 });
 
-exports.getUserCheckUsername = (data) => new Promise((resolve, reject) => {
-  db.query('SELECT name FROM users WHERE username = ?', [data.username], (err, res) => {
-    if (err) reject(err);
-    resolve(res);
-  });
-});
 
 // exports.postUser = (data, cb) =>{
 //     db.query('INSERT INTO users SET ?', data, (err, res) => {

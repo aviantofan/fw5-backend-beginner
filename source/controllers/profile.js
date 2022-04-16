@@ -1,3 +1,4 @@
+const { response } = require('express');
 const profileModel = require('../models/profile');
 const { APP_URL } = process.env;
 
@@ -12,16 +13,9 @@ const getProfile = (req, res) => {
     });
     console.log(processedResult);
     if (results.length > 0) {
-      return res.json({
-        success: true,
-        message: `User profile with ID: ${id}`,
-        result: results[0]
-      });
+      return response(res, `User profile with ID: ${id}`, results[0], null);
     } else {
-      return res.status(404).send({
-        success: false,
-        message: `User with ID: ${id} not found`
-      });
+      return response(res, `User with ID: ${id} not found`, null, null, 404);
     }
   });
 
