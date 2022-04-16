@@ -64,7 +64,7 @@ exports.postUser = (req, res) => {
               }
             });
           } else {
-            return response(res, 'Invalid input, birthdate format is YYYY/MM/DD', null, null, 400);
+            return response(res, 'Invalid input, birthdate format', null, null, 400);
           }
         } else {
           return response(res, 'Phone is not valid', null, null, 400);
