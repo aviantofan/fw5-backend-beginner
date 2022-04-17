@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
         return response(res, 'Wrong username or password!', null, null, 403);
       }
     } else {
-      return response(res, 'Your password must have 8 characters includes Uppercase, Lowercase, Number, and symbol', null, null, 400);
+      return response(res, 'Your password must have 6 characters includes Uppercase, Lowercase, Number, and symbol', null, null, 400);
     }
   } else {
     return response(res, 'Your email format is wrong!', null, null, 400);
