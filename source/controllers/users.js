@@ -1,7 +1,7 @@
 const userModel = require('../models/users');
 const { APP_URL } = process.env;
 const upload = require('../helpers/upload').single('image');
-// const moment = require('moment');
+const moment = require('moment');
 const response = require('../helpers/response');
 const validator = require('validator');
 
@@ -95,6 +95,7 @@ exports.getUsers = (req, res) => {
       if (obj.image !== null) {
         obj.image = `${APP_URL}/${obj.image}`;
       }
+      obj.birthdate = moment(obj.birthdate).utc('+7').format('DD-MM-YYYY');
       return obj;
     });
     console.log(processedResult);
@@ -125,8 +126,10 @@ exports.getUser = (req, res) => {
           if (obj.image !== null) {
             obj.image = `${APP_URL}/${obj.image}`;
           }
+          obj.birthdate = moment(obj.birthdate).utc('+7').format('DD-MM-YYYY');
           return obj;
         });
+
         console.log(processedResult);
         if (results.length > 0) {
           return response(res, 'Detail user', results[0], null);

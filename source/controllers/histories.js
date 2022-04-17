@@ -1,5 +1,6 @@
 const historyModel = require('../models/histories');
 const response = require('../helpers/response');
+const moment = require('moment');
 const validator = require('validator');
 const { APP_URL } = process.env;
 
@@ -74,6 +75,15 @@ exports.getHistories = (req, res) => {
   const offset = (page - 1) * limit;
   const fin = { userName, vehicleName, page, limit, offset };
   historyModel.getHistories(fin, results => {
+    const processedResult = results.map((obj) => {
+      if (obj.image !== null) {
+        obj.image = `${APP_URL}/${obj.image}`;
+      }
+      obj.rentStartDate = moment(obj.rentStartDate).utc('+7').format('DD-MM-YYYY');
+      obj.rentEndDate = moment(obj.rentEndDate).utc('+7').format('DD-MM-YYYY');
+      return obj;
+    });
+    console.log(processedResult);
     historyModel.countHistories(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
@@ -101,6 +111,8 @@ exports.getHistory = (req, res) => {
           if (obj.image !== null) {
             obj.image = `${APP_URL}/${obj.image}`;
           }
+          obj.rentStartDate = moment(obj.rentStartDate).utc('+7').format('DD-MM-YYYY');
+          obj.rentEndDate = moment(obj.rentEndDate).utc('+7').format('DD-MM-YYYY');
           return obj;
         });
         console.log(processedResult);

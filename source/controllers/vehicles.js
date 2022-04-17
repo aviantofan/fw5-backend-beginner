@@ -2,6 +2,7 @@ const vehicleModel = require('../models/vehicles');
 const { APP_URL } = process.env;
 const upload = require('../helpers/upload').single('image');
 const response = require('../helpers/response');
+// const moment = require('moment');
 const validator = require('validator');
 
 exports.postVehicle = (req, res) => {

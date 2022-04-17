@@ -8,7 +8,7 @@ exports.countHistories = (fin, cb) => {
 };
 
 exports.getHistories = (fin, cb) => {
-  db.query(`SELECT h.id, h.userId, u.name AS userName, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.isReturned  FROM histories h LEFT JOIN users u ON h.userId = u.id LEFT JOIN vehicles v ON h.vehicleId = V.id WHERE u.name LIKE '%${fin.userName}%' AND v.name LIKE '%${fin.vehicleName}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+  db.query(`SELECT h.id, h.userId, v.image, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.isReturned  FROM histories h LEFT JOIN users u ON h.userId = u.id LEFT JOIN vehicles v ON h.vehicleId = V.id WHERE u.name LIKE '%${fin.userName}%' AND v.name LIKE '%${fin.vehicleName}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });
