@@ -84,25 +84,25 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.verify = (req, res) => {
-  const auth = req.headers.authorization;
-  if (auth?.startsWith('Bearer')) {
-    const token = auth.split(' ')[1];
-    if (token) {
-      try {
-        if (jwt.verify(token, APP_SECRET)) {
-          return response(res, 'User verified!');
-        } else {
-          return response(res, 'User not verified!', null, null, 403);
-        }
-      } catch (err) {
-        return response(res, 'User not verified!', null, null, 403);
-      }
-    } else {
-      return response(res, 'Token must be provided!', null, null, 403);
-    }
-  }
-};
+// exports.verify = (req, res) => {
+//   const auth = req.headers.authorization;
+//   if (auth?.startsWith('Bearer')) {
+//     const token = auth.split(' ')[1];
+//     if (token) {
+//       try {
+//         if (jwt.verify(token, APP_SECRET)) {
+//           return response(res, 'User verified!');
+//         } else {
+//           return response(res, 'User not verified!', null, null, 403);
+//         }
+//       } catch (err) {
+//         return response(res, 'User not verified!', null, null, 403);
+//       }
+//     } else {
+//       return response(res, 'Token must be provided!', null, null, 403);
+//     }
+//   }
+// };
 
 exports.forgotPassword = async (req, res) => {
   const { email, code, password, confirmPassword } = req.body;
