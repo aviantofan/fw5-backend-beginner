@@ -7,8 +7,8 @@ const validator = require('validator');
 const auth = require('../helpers/auth');
 
 exports.postVehicle = (req, res) => {
-  upload(req, res = () => {
-    auth.verifyAdmin(req, res, function (err) {
+  upload(req, res, (err) => {
+    auth.verifyAdmin(req, res, function (Error) {
       if (err) {
         return response(res, err.message, null, null, 400);
       }
@@ -241,8 +241,8 @@ exports.getVehicle = (req, res) => {
 };
 
 exports.patchVehicle = (req, res) => {
-  upload(req, res = () => {
-    auth.verifyAdmin(req, res, function (err) {
+  upload(req, res, (err) => {
+    auth.verifyAdmin(req, res, function (Error) {
       if (err) {
         return response(res, err.message, null, null, 400);
       }
