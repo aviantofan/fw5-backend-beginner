@@ -2,7 +2,7 @@ const vehicleModel = require('../models/vehicles');
 const { APP_URL } = process.env;
 const upload = require('../helpers/upload').single('image');
 const response = require('../helpers/response');
-// const moment = require('moment');
+const moment = require('moment');
 const validator = require('validator');
 
 exports.postVehicle = (req, res) => {
@@ -219,6 +219,7 @@ exports.getVehicle = (req, res) => {
           if (obj.image !== null) {
             obj.image = `${APP_URL}/${obj.image}`;
           }
+          obj.reservationBefore = moment(obj.reservationBefore, 'HH:mm:ss').format('HH:mm');
           return obj;
         });
         console.log(processedResult);
