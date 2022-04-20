@@ -3,18 +3,18 @@
 ## DESCRIPTION
 This is an API programs for vehicool, this programs can process data in vehicool database by access some endpoints. The endpoints provided to access vehicles, categories, users, and histories.
 ## INSTALLATION
-#### Clone Repository
+#### 1. Clone Repository
 ```
 git clone https://github.com/aviantofan/vehicool-backend
 ```
-#### Import Database vehicle_rent.sql
+#### 2. Import Database vehicle_rent.sql
 
-#### Configure ENV
-#### Install Package
+#### 3. Configure ENV
+#### 4. Install Package
 ```
 npm i
 ```
-#### Run Apps
+#### 5. Run Apps
 ```
 npm run start
 ```
