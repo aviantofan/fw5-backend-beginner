@@ -64,3 +64,8 @@ npm run start
 | ```POST``` | /histories | Create data history|
 | ```PATCH``` | /histories/:id | update data history by id|
 | ```DELETE``` | /histories/:id | delete data history by id|
+
+## BACKEND DEPLOYMENT
+```
+https://vehicool-backend.herokuapp.com/
+```
