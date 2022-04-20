@@ -8,6 +8,10 @@ git clone https://github.com/aviantofan/vehicool-backend
 ```
 npm i
 ```
+
+```
+npm run start
+```
 ## ABOUT
 This is the repository API Backend of vehicool
 
@@ -59,7 +63,3 @@ This is an API programs for vehicool, this programs can process data in vehicool
 | ```POST``` | /histories | Create data history|
 | ```PATCH``` | /histories/:id | update data history by id|
 | ```DELETE``` | /histories/:id | delete data history by id|
-
-## DEPLOYMENT BACKEND
-
-www.heroku.com
