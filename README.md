@@ -1,14 +1,16 @@
 # Vehicool Backend
 
 ## INSTALLATION
+
+#### Clone Repository
 ```
 git clone https://github.com/aviantofan/vehicool-backend
 ```
-
+#### Install Package
 ```
 npm i
 ```
-
+#### Run Apps
 ```
 npm run start
 ```
