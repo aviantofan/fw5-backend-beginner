@@ -1,11 +1,15 @@
 # Vehicool Backend
 
+## DESCRIPTION
+This is an API programs for vehicool, this programs can process data in vehicool database by access some endpoints. The endpoints provided to access vehicles, categories, users, and histories.
 ## INSTALLATION
-
 #### Clone Repository
 ```
 git clone https://github.com/aviantofan/vehicool-backend
 ```
+#### Import Database
+
+#### Configure ENV
 #### Install Package
 ```
 npm i
@@ -14,12 +18,6 @@ npm i
 ```
 npm run start
 ```
-## ABOUT
-This is the repository API Backend of vehicool
-
-## DESCRIPTION
-This is an API programs for vehicool, this programs can process data in vehicool database by access some endpoints. The endpoints provided to access vehicles, categories, users, and histories.
- 
 #### Vehicles Endpoint|
 | METHOD | API | REMARKS |
 | :-------------: |:-------------:|:-----------:|
