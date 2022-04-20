@@ -4,8 +4,8 @@ const { APP_SECRET } = process.env;
 
 exports.verifyUser = (req, res, next) => {
   const auth = req.headers.authorization;
-  if (!auth===undefined){
-    try{
+  if (!auth === undefined) {
+    try {
       if (auth.startsWith('Bearer')) {
         const token = auth.split(' ')[1];
         if (token) {
@@ -26,18 +26,18 @@ exports.verifyUser = (req, res, next) => {
           return response(res, 'Token must be provided!', null, null, 403);
         }
       }
-    } catch(err){
+    } catch (err) {
       console.log(err.message);
     }
-  }else {
+  } else {
     return response(res, 'You must login first!', null, null, 403);
   }
 };
 
 exports.verifyAdmin = (req, res, next) => {
   const auth = req.headers.authorization;
-  if (!auth===undefined){
-    try{
+  if (!auth === undefined) {
+    try {
       if (auth.startsWith('Bearer')) {
         const token = auth.split(' ')[1];
         if (token) {
@@ -58,10 +58,40 @@ exports.verifyAdmin = (req, res, next) => {
           return response(res, 'Token must be provided!', null, null, 403);
         }
       }
-    }catch(err){
+    } catch (err) {
       console.log(err.message);
     }
-  }else {
+  } else {
+    return response(res, 'You must login first!', null, null, 403);
+  }
+};
+
+exports.verify = (req, res, next) => {
+  const auth = req.headers.authorization;
+  if (!auth === undefined) {
+    try {
+      if (auth.startsWith('Bearer')) {
+        const token = auth.split(' ')[1];
+        if (token) {
+          try {
+            const payload = jwt.verify(token, APP_SECRET);
+            req.user = payload;
+            if (jwt.verify(token, APP_SECRET)) {
+              return next();
+            } else {
+              return response(res, 'User not verified!', null, null, 403);
+            }
+          } catch (err) {
+            return response(res, 'User not verified!', null, null, 403);
+          }
+        } else {
+          return response(res, 'Token must be provided!', null, null, 403);
+        }
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  } else {
     return response(res, 'You must login first!', null, null, 403);
   }
 };

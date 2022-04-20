@@ -4,6 +4,7 @@ const upload = require('../helpers/upload').single('image');
 const moment = require('moment');
 const response = require('../helpers/response');
 const validator = require('validator');
+const auth = require('../helpers/auth');
 
 exports.postUser = (req, res) => {
   const data = {
@@ -147,49 +148,51 @@ exports.getUser = (req, res) => {
 
 exports.patchUser = (req, res) => {
   upload(req, res, function (err) {
-    if (err) {
-      return response(res, err.message, null, null, 400);
-    }
-    const id = req.params.id;
-    if (validator.isInt(id)) {
-      if (id > 0) {
-        userModel.getUser(id, (results => {
-          if (results.length > 0) {
-            const data = {};
-            const fillable = ['name', 'email', 'username', 'gender', 'address', 'phone', 'birthdate'];
-            fillable.forEach(field => {
-              if (req.body[field]) {
-                data[field] = req.body[field];
-              }
-            });
-            if (req.file) {
-              data.image = `uploads/${req.file.filename}`;
-            }
-            userModel.patchUser(data, id, (results => {
-              if (results.affectedRows == 1) {
-                userModel.getUser(id, (temp) => {
-                  const mapResults = temp.map(o => {
-                    if (o.image !== null) {
-                      o.image = `${APP_URL}/${o.image}`;
-                    }
-                    return o;
-                  });
-                  return response(res, 'Updated data user success!', mapResults[0], null);
-                });
-              } else {
-                return response(res, 'Data user updated failed!', null, null, 500);
-              }
-            }));
-          } else {
-            return response(res, `User with ID: ${id} not found`, null, null, 404);
-          }
-        }));
-      } else {
-        return response(res, 'Id should be a number greater than 0', null, null, 400);
+    auth.verifyUser(req, res => {
+      if (err) {
+        return response(res, err.message, null, null, 400);
       }
-    } else {
-      return response(res, 'Invalid input, Id must be number!', null, null, 400);
-    }
+      const id = req.params.id;
+      if (validator.isInt(id)) {
+        if (id > 0) {
+          userModel.getUser(id, (results => {
+            if (results.length > 0) {
+              const data = {};
+              const fillable = ['name', 'email', 'username', 'gender', 'address', 'phone', 'birthdate'];
+              fillable.forEach(field => {
+                if (req.body[field]) {
+                  data[field] = req.body[field];
+                }
+              });
+              if (req.file) {
+                data.image = `uploads/${req.file.filename}`;
+              }
+              userModel.patchUser(data, id, (results => {
+                if (results.affectedRows == 1) {
+                  userModel.getUser(id, (temp) => {
+                    const mapResults = temp.map(o => {
+                      if (o.image !== null) {
+                        o.image = `${APP_URL}/${o.image}`;
+                      }
+                      return o;
+                    });
+                    return response(res, 'Updated data user success!', mapResults[0], null);
+                  });
+                } else {
+                  return response(res, 'Data user updated failed!', null, null, 500);
+                }
+              }));
+            } else {
+              return response(res, `User with ID: ${id} not found`, null, null, 404);
+            }
+          }));
+        } else {
+          return response(res, 'Id should be a number greater than 0', null, null, 400);
+        }
+      } else {
+        return response(res, 'Invalid input, Id must be number!', null, null, 400);
+      }
+    });
   });
 };
 
