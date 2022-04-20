@@ -52,6 +52,13 @@ exports.getEmailByEmail = (email) => new Promise((resolve, reject) => {
   });
 });
 
+exports.getRoleUser = (data) => new Promise((resolve, reject) => {
+  db.query('SELECT role FROM users WHERE role', [data.role], (err, res) => {
+    if (err) reject(err);
+    resolve(res);
+  });
+});
+
 exports.patchUser = (data, id, cb) => {
   db.query('UPDATE users SET ? WHERE id=?', [data, id], (err, res) => {
     if (err) throw err;
