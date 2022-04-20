@@ -7,7 +7,7 @@ This is an API programs for vehicool, this programs can process data in vehicool
 ```
 git clone https://github.com/aviantofan/vehicool-backend
 ```
-#### Import Database
+#### Import Database vehicle_rent.sql
 
 #### Configure ENV
 #### Install Package
