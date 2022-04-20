@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2022 at 09:00 AM
+-- Generation Time: Apr 20, 2022 at 10:26 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -103,10 +103,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `image`, `name`, `email`, `username`, `role`, `password`, `gender`, `address`, `phone`, `birthdate`, `createdAt`, `updatedAt`) VALUES
-(1, 'uploads/Tofan-1650101142287-57177357.jpg', 'Admin', 'Administrator@mail.com', 'GM', 'admin', '$2b$10$Ien.I2FBL7YGLZogT9Z/oOtIWQ9KAz4TYTpsZfJ4wQRf.SxZnE0dq', 'Male', 'MARS', '09098877866', '1999-06-05', '2022-04-12 00:01:55', '2022-04-16 23:02:24'),
-(2, 'uploads\\rn_image_picker_lib_temp_813aec70-7c7e-4b20-b7cc-76de0de2bd78-1649734761653-138825056.jpg', 'Mogaf', 'Mogafo6584@carsik.com', '', 'user', '$2b$10$xVHdaTTu1ABivsQJ57O1s.e97nr78BOR0Xq/PxKRhwkv7uIU4lzs.', 'Male', 'Jakarta', '07966186007', '1999-12-12', '2022-04-12 10:36:34', '2022-04-12 10:39:26'),
-(3, NULL, 'Roki', 'uni@mail.com', '', 'user', '$2b$10$NkGsCmP.al/DwFZlPCTwKOTekdUrf9FGqQizaBYBoyEowlu4Pym.i', NULL, '', '', '0000-00-00', '2022-04-14 12:04:56', NULL),
-(4, NULL, 'Roki', 'roki@mail.com', '', 'user', '$2b$10$ewj0PGahqKEK5jCITk.FceE1pTtZ/I4ajOkkllufMKgvAmbP9VzwG', NULL, '', '', '0000-00-00', '2022-04-16 23:21:09', NULL);
+(1, NULL, 'Admin', 'aviantofan@gmail.com', '', 'admin', '$2b$10$..jrBU05OBcI5gNRjfbt9e7aGt177bGNN6UyTy0AIjBOxLW..rkMa', NULL, '', '', '0000-00-00', '2022-04-20 15:09:50', '2022-04-20 15:10:17');
 
 -- --------------------------------------------------------
 
@@ -216,7 +213,7 @@ ALTER TABLE `histories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `vehicles`
