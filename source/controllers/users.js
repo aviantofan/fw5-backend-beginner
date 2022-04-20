@@ -147,8 +147,8 @@ exports.getUser = (req, res) => {
 };
 
 exports.patchUser = (req, res) => {
-  upload(req, res, function (err) {
-    auth.verifyUser(req, res => {
+  upload(req, res = () => {
+    auth.verifyUser(req, res = (err) => {
       if (err) {
         return response(res, err.message, null, null, 400);
       }
