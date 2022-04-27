@@ -22,14 +22,14 @@ exports.getPopulars = (fin, cb) => {
 };
 
 exports.getVehicles = (fin, cb) => {
-  db.query(`SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.price*50/100 AS minPrepayment, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' AND c.id LIKE '%${fin.categoryId}%' ORDER BY ${fin.sort} ${fin.order} LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+  db.query(`SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.paymentMethod, v.price, v.price*50/100 AS minPrepayment, v.stock, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' AND v.paymentMethod LIKE '%${fin.paymentMethod}%' AND c.id LIKE '%${fin.categoryId}%' ORDER BY ${fin.sort} ${fin.order} LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });
 };
 
 exports.getVehicle = (id, cb) => {
-  db.query('SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.price, v.price*50/100 AS minPrepayment, v.qty, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.id=?', [id], (err, res) => {
+  db.query('SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.paymentMethod, v.price, v.price*50/100 AS minPrepayment, v.stock, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.id=?', [id], (err, res) => {
     if (err) throw err;
     cb(res);
   });
