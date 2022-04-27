@@ -18,20 +18,31 @@ npm i
 ```
 npm run start
 ```
+```
+npm run dev
+```
 ## ENDPOINT
+#### Auth Endpoint|
+| METHOD | API | REMARKS |
+| :-------------: |:-------------:|:-----------:|
+| ```POST``` | /auth/register | Register account |
+| ```POST``` | /auth/login | Login account|
+| ```POST``` | /auth/forgotPassword | Reset password|
+
 #### Vehicles Endpoint|
 | METHOD | API | REMARKS |
 | :-------------: |:-------------:|:-----------:|
 | ```GET``` | /vehicles | Get all data vehicle|
 | ```GET``` | /vehicles?search=xx | Get all data vehicle by search|
-| ```GET``` | /populars | Get data vehicle populars|
-| ```GET``` | /vehicles?pagexx&limit=xx | Get all data vehicle with page and limit| 
+| ```GET``` | /vehicles/p/populars | Get data vehicle populars|
+| ```GET``` | /vehicles?page=xx&limit=xx | Get all data vehicle with page and limit| 
+| ```GET``` | /vehicles?sort=xx&order=xx | Get all data vehicle with sort and order| 
 | ```GET``` | /vehicles/:id | Get data vehicle by id |
 | ```POST``` | /vehicles | Create data vehicle|
 | ```PATCH``` | /vehicles/:id | update data vehicle by id|
 | ```DELETE``` | /vehicles/:id | delete data vehicle by id|
 
-#### Categories Endpoint
+#### Categories Endpoint|
 | METHOD | API | REMARKS |
 | :-------------: |:-------------:|:-----------:|
 | ```GET``` | /categories | Get all data category|
@@ -42,16 +53,21 @@ npm run start
 | ```PATCH``` | /categories/:id | update data category by id|
 | ```DELETE``` | /categories/:id | delete data category by id|
 
-#### Users Endpoint all data users|
+#### Users Endpoint|
 | METHOD | API | REMARKS |
 | :-------------: |:-------------:|:-----------:|
 | ```GET``` | /users?search=xx | Get all data user by search |
 | ```GET``` | /users?pagexx&limit=xx |Get all data user with page and limit|
 | ```GET``` | /users | Get all data User|
 | ```GET``` | /users/:id | Get data user by id |
-| ```POST``` | /users/profile | Create data user|
-| ```PATCH``` | /users/profile/:id | update data user by id|
+| ```POST``` | /users | Create data user|
+| ```PATCH``` | /users/:id | update data user by id|
 | ```DELETE``` | /users/:id | delete data user by id|
+
+#### Profile Endpoint all data |
+| METHOD | API | REMARKS |
+| :-------------: |:-------------:|:-----------:|
+| ```GET``` | /profile | Get current active user|
 
 #### History Endpoint
 | METHOD | API | REMARKS |
