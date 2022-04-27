@@ -112,9 +112,9 @@ exports.register = async (req, res) => {
 //       return response(res, err.message, null, null, 500);
 //     }
 //   } else {
-    return response(res, 'You must login first!', null, null, 403);
-  }
-};
+//     return response(res, 'You must login first!', null, null, 403);
+//   }
+// };
 
 exports.forgotPassword = async (req, res) => {
   const { email, code, password, confirmPassword } = req.body;
