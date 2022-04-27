@@ -1,6 +1,6 @@
 const users = require('express').Router();
 
-const { login, /*verify*/ register, forgotPassword } = require('../controllers/auth');
+const { login, /*verify,*/ register, forgotPassword } = require('../controllers/auth');
 
 users.post('/login', login);
 // users.post('/verify', verify);
