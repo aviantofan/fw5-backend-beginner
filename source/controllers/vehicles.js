@@ -20,8 +20,9 @@ exports.postVehicle = (req, res) => {
         capacity: req.body.capacity,
         categoryId: req.body.categoryId,
         reservationBefore: req.body.reservationBefore,
+        paymentMethod: req.body.paymentMethod,
         price: req.body.price,
-        qty: req.body.qty
+        stock: req.body.stock
       };
       if (validator.isEmpty(data.name)) {
         return response(res, 'Name cannot empty!', null, null, 400);
@@ -33,28 +34,31 @@ exports.postVehicle = (req, res) => {
         return response(res, 'Location cannot empty!', null, null, 400);
       }
       if (validator.isEmpty(data.isAvailable)) {
-        return response(res, 'isAvailable cannot empty!', null, null, 400);
+        return response(res, 'Status cannot empty!', null, null, 400);
       }
       if (validator.isEmpty(data.capacity)) {
-        return response(res, 'capacity cannot empty!', null, null, 400);
+        return response(res, 'Capacity cannot empty!', null, null, 400);
       }
       if (validator.isEmpty(data.categoryId)) {
-        return response(res, 'categoryId cannot empty!', null, null, 400);
+        return response(res, 'Category cannot empty!', null, null, 400);
       }
       if (validator.isEmpty(data.reservationBefore)) {
-        return response(res, 'reservationBefore cannot empty!', null, null, 400);
+        return response(res, 'Reservation deadline cannot empty!', null, null, 400);
+      }
+      if (validator.isEmpty(data.paymentMethod)) {
+        return response(res, 'paymentMethod cannot empty!', null, null, 400);
       }
       if (validator.isEmpty(data.price)) {
-        return response(res, 'price cannot empty!', null, null, 400);
+        return response(res, 'Price cannot empty!', null, null, 400);
       }
-      if (validator.isEmpty(data.qty)) {
-        return response(res, 'qty cannot empty!', null, null, 400);
+      if (validator.isEmpty(data.stock)) {
+        return response(res, 'Stock cannot empty!', null, null, 400);
       }
       if (validator.isInt(data.isAvailable)) {
         if (validator.isInt(data.capacity)) {
           if (validator.isInt(data.categoryId)) {
             if (validator.isInt(data.price)) {
-              if (validator.isInt(data.qty)) {
+              if (validator.isInt(data.stock)) {
                 if (req.file) {
                   data.image = `${req.file.filename}`;
                 }
@@ -80,7 +84,7 @@ exports.postVehicle = (req, res) => {
                   }
                 });
               } else {
-                return response(res, 'Invalid input, Quantity must be a Number!', null, null, 400);
+                return response(res, 'Invalid input, Stock must be a Number!', null, null, 400);
               }
             } else {
               return response(res, 'Invalid input, Price must be a Number!', null, null, 400);
@@ -134,16 +138,17 @@ exports.getPopulars = (req, res) => {
 };
 
 exports.getVehicles = (req, res) => {
-  let { name, location, categoryId, sort, order, page, limit } = req.query;
+  let { name, location, paymentMethod, categoryId, sort, order, page, limit } = req.query;
   name = name || '';
   location = location || '';
+  paymentMethod = paymentMethod || '';
   categoryId = categoryId || '';
   sort = sort || 'createdAt';
   order = order || 'desc';
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 4;
   const offset = (page - 1) * limit;
-  const fin = { name, location, categoryId, sort, page, order, limit, offset };
+  const fin = { name, location, paymentMethod, categoryId, sort, page, order, limit, offset };
   vehicleModel.getVehicles(fin, results => {
     results.map((obj) => {
       if (obj.image !== null) {
@@ -170,14 +175,15 @@ exports.getVehicles = (req, res) => {
 };
 
 exports.getVehiclesCategory = (req, res) => {
-  let { name, location, categoryId, page, limit } = req.query;
+  let { name, location,  paymentMethod, categoryId, page, limit } = req.query;
   name = name || '';
   location = location || '';
+  paymentMethod = paymentMethod || '';
   categoryId = categoryId || '';
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 5;
   const offset = (page - 1) * limit;
-  const fin = { name, location, categoryId, page, limit, offset };
+  const fin = { name, location, paymentMethod, categoryId, page, limit, offset };
   vehicleModel.getVehiclesCategory(fin, results => {
     results.map((obj) => {
       if (obj.image !== null) {
@@ -243,7 +249,7 @@ exports.patchVehicle = (req, res) => {
             vehicleModel.getVehicle(id, (results => {
               if (results.length > 0) {
                 const data = {};
-                const fillable = ['name', 'color', 'loc', 'isAvailable', 'isPrepay', 'capacity', 'reservationBefore', 'price', 'qty'];
+                const fillable = ['name', 'color', 'loc', 'isAvailable', 'isPrepay', 'capacity', 'reservationBefore', 'paymentMethod', 'price', 'stock'];
                 fillable.forEach(field => {
                   if (req.body[field]) {
                     data[field] = req.body[field];
