@@ -4,7 +4,7 @@ const { APP_SECRET } = process.env;
 
 exports.verifyUser = (req, res, next) => {
   const auth = req.headers.authorization;
-  if (!auth === undefined) {
+  if (auth !== undefined) {
     try {
       if (auth.startsWith('Bearer')) {
         const token = auth.split(' ')[1];
@@ -27,7 +27,7 @@ exports.verifyUser = (req, res, next) => {
         }
       }
     } catch (err) {
-      console.log(err.message);
+      return response(res, err.message, null, null, 500);
     }
   } else {
     return response(res, 'You must login first!', null, null, 403);
@@ -36,7 +36,7 @@ exports.verifyUser = (req, res, next) => {
 
 exports.verifyAdmin = (req, res, next) => {
   const auth = req.headers.authorization;
-  if (!auth === undefined) {
+  if (auth !== undefined) {
     try {
       if (auth.startsWith('Bearer')) {
         const token = auth.split(' ')[1];
@@ -44,7 +44,7 @@ exports.verifyAdmin = (req, res, next) => {
           try {
             const payload = jwt.verify(token, APP_SECRET);
             req.user = payload;
-            if (payload.role == 'admin') {
+            if (payload) {
               if (jwt.verify(token, APP_SECRET)) {
                 return next();
               } else {
@@ -59,7 +59,7 @@ exports.verifyAdmin = (req, res, next) => {
         }
       }
     } catch (err) {
-      console.log(err.message);
+      return response(res, err.message, null, null, 500);
     }
   } else {
     return response(res, 'You must login first!', null, null, 403);
@@ -68,7 +68,7 @@ exports.verifyAdmin = (req, res, next) => {
 
 exports.verify = (req, res, next) => {
   const auth = req.headers.authorization;
-  if (!auth === undefined) {
+  if (auth !== undefined) {
     try {
       if (auth.startsWith('Bearer')) {
         const token = auth.split(' ')[1];
@@ -89,7 +89,7 @@ exports.verify = (req, res, next) => {
         }
       }
     } catch (err) {
-      console.log(err.message);
+      return response(res, err.message, null, null, 500);
     }
   } else {
     return response(res, 'You must login first!', null, null, 403);
