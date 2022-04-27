@@ -1,14 +1,17 @@
-const { response } = require('express');
 const profileModel = require('../models/profile');
-const { APP_URL } = process.env;
+const { CLOUD_URL } = process.env;
+const response = require('../helpers/response');
+const moment = require('moment');
 
 const getProfile = (req, res) => {
   const { id } = req.user;
   profileModel.getProfile(id, results => {
     const processedResult = results.map((obj) => {
       if (obj.image !== null) {
-        obj.image = `${APP_URL}/${obj.image}`;
+        obj.image = `${CLOUD_URL}/${obj.image}`;
       }
+      obj.birthdate = moment(obj.birthdate).utc('+7').format('YYYY-MM-DD');
+      obj.createdAt = moment(obj.createdAt).utc('+7').format('YYYY');
       return obj;
     });
     console.log(processedResult);
