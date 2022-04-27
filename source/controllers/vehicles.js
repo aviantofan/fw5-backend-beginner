@@ -1,5 +1,5 @@
 const vehicleModel = require('../models/vehicles');
-const { APP_URL } = process.env;
+const { APP_URL, CLOUD_URL} = process.env;
 const upload = require('../helpers/upload').single('image');
 const response = require('../helpers/response');
 const moment = require('moment');
@@ -17,7 +17,6 @@ exports.postVehicle = (req, res) => {
         color: req.body.color,
         loc: req.body.loc,
         isAvailable: req.body.isAvailable,
-        isPrepay: req.body.isPrepay,
         capacity: req.body.capacity,
         categoryId: req.body.categoryId,
         reservationBefore: req.body.reservationBefore,
@@ -36,9 +35,6 @@ exports.postVehicle = (req, res) => {
       if (validator.isEmpty(data.isAvailable)) {
         return response(res, 'isAvailable cannot empty!', null, null, 400);
       }
-      if (validator.isEmpty(data.isPrepay)) {
-        return response(res, 'isPrepay cannot empty!', null, null, 400);
-      }
       if (validator.isEmpty(data.capacity)) {
         return response(res, 'capacity cannot empty!', null, null, 400);
       }
@@ -55,49 +51,45 @@ exports.postVehicle = (req, res) => {
         return response(res, 'qty cannot empty!', null, null, 400);
       }
       if (validator.isInt(data.isAvailable)) {
-        if (validator.isInt(data.isPrepay)) {
-          if (validator.isInt(data.capacity)) {
-            if (validator.isInt(data.categoryId)) {
-              if (validator.isInt(data.price)) {
-                if (validator.isInt(data.qty)) {
-                  if (req.file) {
-                    data.image = `uploads/${req.file.filename}`;
-                  }
-                  vehicleModel.getVehicleCheck(data, results => {
-                    if (results.length < 1) {
-                      vehicleModel.postVehicle(data, (results => {
-                        if (results.affectedRows == 1) {
-                          vehicleModel.getVehicle(results.insertId, (temp) => {
-                            const mapResults = temp.map(o => {
-                              if (o.image !== null) {
-                                o.image = `${APP_URL}/${o.image}`;
-                              }
-                              return o;
-                            });
-                            return response(res, 'Input data vehicle success!', mapResults[0], null);
-                          });
-                        } else {
-                          return response(res, 'Input data vehicle failed!', null, null, 500);
-                        }
-                      }));
-                    } else {
-                      return response(res, 'Data has already inserted!', null, null, 400);
-                    }
-                  });
-                } else {
-                  return response(res, 'Invalid input, Quantity must be a Number!', null, null, 400);
+        if (validator.isInt(data.capacity)) {
+          if (validator.isInt(data.categoryId)) {
+            if (validator.isInt(data.price)) {
+              if (validator.isInt(data.qty)) {
+                if (req.file) {
+                  data.image = `${req.file.filename}`;
                 }
+                vehicleModel.getVehicleCheck(data, results => {
+                  if (results.length < 1) {
+                    vehicleModel.postVehicle(data, (results => {
+                      if (results.affectedRows == 1) {
+                        vehicleModel.getVehicle(results.insertId, (temp) => {
+                          const mapResults = temp.map(o => {
+                            if (o.image !== null) {
+                              o.image = `${CLOUD_URL}/${o.image}`;
+                            }
+                            return o;
+                          });
+                          return response(res, 'Input data vehicle success!', mapResults[0], null);
+                        });
+                      } else {
+                        return response(res, 'Input data vehicle failed!', null, null, 500);
+                      }
+                    }));
+                  } else {
+                    return response(res, 'Data has already inserted!', null, null, 400);
+                  }
+                });
               } else {
-                return response(res, 'Invalid input, Price must be a Number!', null, null, 400);
+                return response(res, 'Invalid input, Quantity must be a Number!', null, null, 400);
               }
             } else {
-              return response(res, 'Invalid input, CategoryId must be a Number!', null, null, 400);
+              return response(res, 'Invalid input, Price must be a Number!', null, null, 400);
             }
           } else {
-            return response(res, 'Invalid input, Capacity must be a Number!', null, null, 400);
+            return response(res, 'Invalid input, CategoryId must be a Number!', null, null, 400);
           }
         } else {
-          return response(res, 'Invalid input, isPrepay must be a Number!', null, null, 400);
+          return response(res, 'Invalid input, Capacity must be a Number!', null, null, 400);
         }
       } else {
         return response(res, 'Invalid input, isAvailable must be a Number!', null, null, 400);
@@ -118,7 +110,7 @@ exports.getPopulars = (req, res) => {
   vehicleModel.getPopulars(fin, results => {
     results.map((obj) => {
       if (obj.image !== null) {
-        obj.image = `${APP_URL}/${obj.image}`;
+        obj.image = `${CLOUD_URL}/${obj.image}`;
       }
       return obj;
     });
@@ -127,8 +119,8 @@ exports.getPopulars = (req, res) => {
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
         return response(res, 'List Populars', results, {
-          prev: page > 1 ? `http://localhost:5000/vehicles/p/populars?page=${page - 1}&limit=${limit}` : null,
-          next: page < last ? `http://localhost:5000/vehicles/p/populars?page=${page + 1}&limit=${limit}` : null,
+          prev: page > 1 ? `${APP_URL}/vehicles/p/populars?page=${page - 1}&limit=${limit}` : null,
+          next: page < last ? `${APP_URL}/vehicles/p/populars?page=${page + 1}&limit=${limit}` : null,
           totalData: total,
           currentPage: page,
           lastPage: last
@@ -153,20 +145,19 @@ exports.getVehicles = (req, res) => {
   const offset = (page - 1) * limit;
   const fin = { name, location, categoryId, sort, page, order, limit, offset };
   vehicleModel.getVehicles(fin, results => {
-    const processedResult = results.map((obj) => {
+    results.map((obj) => {
       if (obj.image !== null) {
-        obj.image = `${APP_URL}/${obj.image}`;
+        obj.image = `${CLOUD_URL}/${obj.image}`;
       }
       return obj;
     });
-    console.log(processedResult);
     vehicleModel.countVehicles(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
         return response(res, 'List Vehicles', results, {
-          prev: page > 1 ? `http://localhost:5000/vehicles?page=${page - 1}` : null,
-          next: page < last ? `http://localhost:5000/vehicles?page=${page + 1}` : null,
+          prev: page > 1 ? `${APP_URL}/vehicles?page=${page - 1}` : null,
+          next: page < last ? `${APP_URL}/vehicles?page=${page + 1}` : null,
           totalData: total,
           currentPage: page,
           lastPage: last
@@ -190,7 +181,7 @@ exports.getVehiclesCategory = (req, res) => {
   vehicleModel.getVehiclesCategory(fin, results => {
     results.map((obj) => {
       if (obj.image !== null) {
-        obj.image = `${APP_URL}/${obj.image}`;
+        obj.image = `${CLOUD_URL}/${obj.image}`;
       }
       return obj;
     });
@@ -199,8 +190,8 @@ exports.getVehiclesCategory = (req, res) => {
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
         return response(res, 'List Vehicles Category', results, {
-          prev: page > 1 ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page - 1}&limit=${limit}` : null,
-          next: page < last ? `http://localhost:5000/vehicles/category?categoryId=${categoryId}&page=${page + 1}&limit=${limit}` : null,
+          prev: page > 1 ? `${APP_URL}/vehicles/category?categoryId=${categoryId}&page=${page - 1}&limit=${limit}` : null,
+          next: page < last ? `${APP_URL}/vehicles/category?categoryId=${categoryId}&page=${page + 1}&limit=${limit}` : null,
           totalData: total,
           currentPage: page,
           lastPage: last
@@ -218,14 +209,13 @@ exports.getVehicle = (req, res) => {
   if (validator.isInt(id)) {
     if (id > 0) {
       vehicleModel.getVehicle(id, results => {
-        const processedResult = results.map((obj) => {
+        results.map((obj) => {
           if (obj.image !== null) {
-            obj.image = `${APP_URL}/${obj.image}`;
+            obj.image = `${CLOUD_URL}/${obj.image}`;
           }
           obj.reservationBefore = moment(obj.reservationBefore, 'HH:mm:ss').format('HH:mm');
           return obj;
         });
-        console.log(processedResult);
         if (results.length > 0) {
           return response(res, 'Detail Vehicle', results[0], null);
         } else {
@@ -260,15 +250,14 @@ exports.patchVehicle = (req, res) => {
                   }
                 });
                 if (req.file) {
-                  data.image = `uploads/${req.file.filename}`;
+                  data.image = `${req.file.filename}`;
                 }
-                console.log(data);
                 vehicleModel.patchVehicle(data, id, (results => {
                   if (results.affectedRows == 1) {
                     vehicleModel.getVehicle(id, (temp) => {
                       const mapResults = temp.map(o => {
                         if (o.image !== null) {
-                          o.image = `${APP_URL}/${o.image}`;
+                          o.image = `${CLOUD_URL}/${o.image}`;
                         }
                         return o;
                       });
