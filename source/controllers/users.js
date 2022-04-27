@@ -1,5 +1,5 @@
 const userModel = require('../models/users');
-const { APP_URL } = process.env;
+const { APP_URL, CLOUD_URL } = process.env;
 const upload = require('../helpers/upload').single('image');
 const moment = require('moment');
 const response = require('../helpers/response');
@@ -92,21 +92,20 @@ exports.getUsers = (req, res) => {
   const offset = (page - 1) * limit;
   const fin = { name, address, sort, order, page, limit, offset };
   userModel.getUsers(fin, results => {
-    const processedResult = results.map((obj) => {
+    results.map((obj) => {
       if (obj.image !== null) {
-        obj.image = `${APP_URL}/${obj.image}`;
+        obj.image = `${CLOUD_URL}/${obj.image}`;
       }
       obj.birthdate = moment(obj.birthdate).utc('+7').format('DD-MM-YYYY');
       return obj;
     });
-    console.log(processedResult);
     userModel.countUsers(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
         return response(res, 'List Users', results, {
-          prev: page > 1 ? `http://localhost:5000/users?page=${page - 1}` : null,
-          next: page < last ? `http://localhost:5000/users?page=${page + 1}` : null,
+          prev: page > 1 ? `${APP_URL}/users?page=${page - 1}` : null,
+          next: page < last ? `${APP_URL}/users?page=${page + 1}` : null,
           totalData: total,
           currentPage: page,
           lastPage: last
@@ -123,15 +122,13 @@ exports.getUser = (req, res) => {
   if (validator.isInt(id)) {
     if (id > 0) {
       userModel.getUser(id, results => {
-        const processedResult = results.map((obj) => {
+        results.map((obj) => {
           if (obj.image !== null) {
-            obj.image = `${APP_URL}/${obj.image}`;
+            obj.image = `${CLOUD_URL}/${obj.image}`;
           }
-          obj.birthdate = moment(obj.birthdate).utc('+7').format('DD-MM-YYYY');
+          obj.birthdate = moment(obj.birthdate).utc('+7').format('YYYY-MM-DD');
           return obj;
         });
-
-        console.log(processedResult);
         if (results.length > 0) {
           return response(res, 'Detail user', results[0], null);
         } else {
@@ -148,7 +145,7 @@ exports.getUser = (req, res) => {
 
 exports.patchUser = (req, res) => {
   upload(req, res, (err) => {
-    auth.verifyUser(req, res, function (Error) {
+    auth.verify(req, res, function (Error) {
       if (err) {
         return response(res, err.message, null, null, 400);
       }
@@ -165,15 +162,17 @@ exports.patchUser = (req, res) => {
                 }
               });
               if (req.file) {
-                data.image = `uploads/${req.file.filename}`;
+                data.image = `${req.file.filename}`;
               }
               userModel.patchUser(data, id, (results => {
                 if (results.affectedRows == 1) {
                   userModel.getUser(id, (temp) => {
                     const mapResults = temp.map(o => {
                       if (o.image !== null) {
-                        o.image = `${APP_URL}/${o.image}`;
+                        o.image = `${CLOUD_URL}/${o.image}`;
                       }
+                      o.birthdate = moment(o.birthdate).utc('+7').format('YYYY-MM-DD');
+                      o.createdAt = moment(o.createdAt).utc('+7').format('YYYY');
                       return o;
                     });
                     return response(res, 'Updated data user success!', mapResults[0], null);
