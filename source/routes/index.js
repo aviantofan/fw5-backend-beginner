@@ -10,7 +10,7 @@ route.use('/auth', cors(), require('./auth'));
 route.use('/profile', cors(), require('./profile'));
 
 route.get('/', (req, res) => {
-  return response(res, 'Backend Is Running Well', null, null);
+  return response(res, 'Hi Hello, Backend Is Running Well', null, null);
 });
 
 module.exports = route;
