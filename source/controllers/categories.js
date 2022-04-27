@@ -1,6 +1,7 @@
 const categoryModel = require('../models/categories');
 const response = require('../helpers/response');
 const validator = require('validator');
+const { APP_URL } = process.env;
 
 exports.postCategory = (req, res) => {
   const data = {
@@ -40,8 +41,8 @@ exports.getCategories = (req, res) => {
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
         return response(res, 'List Categories', results, {
-          prev: page > 1 ? `http://localhost:50000/categories?page=${page - 1}` : null,
-          next: page < last ? `http://localhost:5000/categories?page=${page + 1}` : null,
+          prev: page > 1 ? `${APP_URL}/categories?page=${page - 1}` : null,
+          next: page < last ? `${APP_URL}/categories?page=${page + 1}` : null,
           totalData: total,
           currentPage: page,
           lastPage: last
