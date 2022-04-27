@@ -84,34 +84,34 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.verify = (req, res) => {
-  const auth = req.headers.authorization;
-  if (auth !== undefined) {
-    try {
-      if (auth.startsWith('Bearer')) {
-        const token = auth.split(' ')[1];
-        if (token) {
-          try {
-            const payload = jwt.verify(token, APP_SECRET);
-            req.user = payload;
-            if (payload.role == 'admin') {
-              if (jwt.verify(token, APP_SECRET)) {
-                return response(res, 'User verified!', null, null);
-              } else {
-                return response(res, 'User not verified!', null, null, 403);
-              }
-            } return response(res, 'You don`t have access!', null, null, 403);
-          } catch (err) {
-            return response(res, 'User not verified!', null, null, 403);
-          }
-        } else {
-          return response(res, 'Token must be provided!', null, null, 403);
-        }
-      }
-    } catch (err) {
-      return response(res, err.message, null, null, 500);
-    }
-  } else {
+// exports.verify = (req, res) => {
+//   const auth = req.headers.authorization;
+//   if (auth !== undefined) {
+//     try {
+//       if (auth.startsWith('Bearer')) {
+//         const token = auth.split(' ')[1];
+//         if (token) {
+//           try {
+//             const payload = jwt.verify(token, APP_SECRET);
+//             req.user = payload;
+//             if (payload.role == 'admin') {
+//               if (jwt.verify(token, APP_SECRET)) {
+//                 return response(res, 'User verified!', null, null);
+//               } else {
+//                 return response(res, 'User not verified!', null, null, 403);
+//               }
+//             } return response(res, 'You don`t have access!', null, null, 403);
+//           } catch (err) {
+//             return response(res, 'User not verified!', null, null, 403);
+//           }
+//         } else {
+//           return response(res, 'Token must be provided!', null, null, 403);
+//         }
+//       }
+//     } catch (err) {
+//       return response(res, err.message, null, null, 500);
+//     }
+//   } else {
     return response(res, 'You must login first!', null, null, 403);
   }
 };
