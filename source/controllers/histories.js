@@ -2,7 +2,7 @@ const historyModel = require('../models/histories');
 const response = require('../helpers/response');
 const moment = require('moment');
 const validator = require('validator');
-const { APP_URL } = process.env;
+const { APP_URL, CLOUD_URL } = process.env;
 
 exports.postHistory = (req, res) => {
   const data = {
@@ -75,22 +75,21 @@ exports.getHistories = (req, res) => {
   const offset = (page - 1) * limit;
   const fin = { userName, vehicleName, page, limit, offset };
   historyModel.getHistories(fin, results => {
-    const processedResult = results.map((obj) => {
+    results.map((obj) => {
       if (obj.image !== null) {
-        obj.image = `${APP_URL}/${obj.image}`;
+        obj.image = `${CLOUD_URL}/${obj.image}`;
       }
       obj.rentStartDate = moment(obj.rentStartDate).utc('+7').format('DD-MM-YYYY');
       obj.rentEndDate = moment(obj.rentEndDate).utc('+7').format('DD-MM-YYYY');
       return obj;
     });
-    console.log(processedResult);
     historyModel.countHistories(fin, (count) => {
       const { total } = count[0];
       const last = Math.ceil(total / limit);
       if (results.length > 0) {
         return response(res, 'List Histories', results, {
-          prev: page > 1 ? `http://localhost:50000/histories?page=${page - 1}` : null,
-          next: page < last ? `http://localhost:5000/histories?page=${page + 1}` : null,
+          prev: page > 1 ? `${APP_URL}/histories?page=${page - 1}` : null,
+          next: page < last ? `${APP_URL}/histories?page=${page + 1}` : null,
           totalData: total,
           currentPage: page,
           lastPage: last
@@ -107,15 +106,14 @@ exports.getHistory = (req, res) => {
   if (validator.isInt(id)) {
     if (id > 0) {
       historyModel.getHistory(id, results => {
-        const processedResult = results.map((obj) => {
+        results.map((obj) => {
           if (obj.image !== null) {
-            obj.image = `${APP_URL}/${obj.image}`;
+            obj.image = `${CLOUD_URL}/${obj.image}`;
           }
           obj.rentStartDate = moment(obj.rentStartDate).utc('+7').format('DD-MM-YYYY');
           obj.rentEndDate = moment(obj.rentEndDate).utc('+7').format('DD-MM-YYYY');
           return obj;
         });
-        console.log(processedResult);
         if (results.length > 0) {
           return response(res, 'List History Users', results, null);
         } else {
