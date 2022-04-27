@@ -25,7 +25,7 @@ exports.login = async (req, res) => {
         const { password: hash } = result[0];
         const fin = await bcrypt.compare(password, hash);
         if (fin) {
-          const token = jwt.sign({ id: result[0].id }, APP_SECRET);
+          const token = jwt.sign({ id: result[0].id, role:result[0].role }, APP_SECRET);
           return response(res, 'Login Success!', { token }, null);
         } else {
           return response(res, 'Wrong username or password!', null, null, 403);
@@ -84,25 +84,37 @@ exports.register = async (req, res) => {
   }
 };
 
-// exports.verify = (req, res) => {
-//   const auth = req.headers.authorization;
-//   if (auth?.startsWith('Bearer')) {
-//     const token = auth.split(' ')[1];
-//     if (token) {
-//       try {
-//         if (jwt.verify(token, APP_SECRET)) {
-//           return response(res, 'User verified!');
-//         } else {
-//           return response(res, 'User not verified!', null, null, 403);
-//         }
-//       } catch (err) {
-//         return response(res, 'User not verified!', null, null, 403);
-//       }
-//     } else {
-//       return response(res, 'Token must be provided!', null, null, 403);
-//     }
-//   }
-// };
+exports.verify = (req, res) => {
+  const auth = req.headers.authorization;
+  if (auth !== undefined) {
+    try {
+      if (auth.startsWith('Bearer')) {
+        const token = auth.split(' ')[1];
+        if (token) {
+          try {
+            const payload = jwt.verify(token, APP_SECRET);
+            req.user = payload;
+            if (payload.role == 'admin') {
+              if (jwt.verify(token, APP_SECRET)) {
+                return response(res, 'User verified!', null, null);
+              } else {
+                return response(res, 'User not verified!', null, null, 403);
+              }
+            } return response(res, 'You don`t have access!', null, null, 403);
+          } catch (err) {
+            return response(res, 'User not verified!', null, null, 403);
+          }
+        } else {
+          return response(res, 'Token must be provided!', null, null, 403);
+        }
+      }
+    } catch (err) {
+      return response(res, err.message, null, null, 500);
+    }
+  } else {
+    return response(res, 'You must login first!', null, null, 403);
+  }
+};
 
 exports.forgotPassword = async (req, res) => {
   const { email, code, password, confirmPassword } = req.body;
@@ -112,14 +124,13 @@ exports.forgotPassword = async (req, res) => {
       const randomCode = Math.floor(Math.pow(10, 6 - 1) + Math.random() * (Math.pow(10, 6) - Math.pow(10, 6 - 1) - 1));
       const reset = await forgotRequestModel.createRequest(user[0].id, randomCode);
       if (reset.affectedRows >= 1) {
-        const info = await mail.sendMail({
+        await mail.sendMail({
           from: APP_EMAIL,
           to: email,
           subject: 'Reset Password | Vehicle Rent',
           text: String(randomCode),
           html: `<b> This is ${randomCode} your code for reset your password! DO NOT GIVE THIS CODE TO OTHERS!</b>`
         });
-        console.log(info.messageId);
         return response(res, 'Forgot Password request has been sent to your email!');
       } else {
         return response(res, 'Unexpected Error', null, null, 500);
@@ -154,7 +165,6 @@ exports.forgotPassword = async (req, res) => {
             return response(res, 'Password is mandatory!', null, null, 400);
           }
         } else {
-          console.log(user);
           return response(res, 'Invalid Email', null, null, 400);
         }
       } else {
