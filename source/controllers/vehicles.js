@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars*/
+
 const vehicleModel = require('../models/vehicles');
 const { APP_URL, CLOUD_URL} = process.env;
 const upload = require('../helpers/upload').single('image');
