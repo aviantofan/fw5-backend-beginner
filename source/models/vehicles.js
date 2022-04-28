@@ -29,7 +29,7 @@ exports.getVehicles = (fin, cb) => {
 };
 
 exports.getVehicle = (id, cb) => {
-  db.query('SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.reservationBefore, v.paymentMethod, v.price, v.price*50/100 AS minPrepayment, v.stock, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.id=?', [id], (err, res) => {
+  db.query('SELECT v.id, v.image, v.name, v.color, v.loc, v.isAvailable, v.isPrepay, v.capacity, c.name AS categoryName, v.categoryId, v.reservationBefore, v.paymentMethod, v.price, v.price*50/100 AS minPrepayment, v.stock, v.createdAt, v.updatedAt FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.id=?', [id], (err, res) => {
     if (err) throw err;
     cb(res);
   });
