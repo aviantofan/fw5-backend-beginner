@@ -6,7 +6,7 @@ const moment = require('moment');
 const getProfile = (req, res) => {
   const { id } = req.user;
   profileModel.getProfile(id, results => {
-    const processedResult = results.map((obj) => {
+    results.map((obj) => {
       if (obj.image !== null) {
         obj.image = `${CLOUD_URL}/${obj.image}`;
       }
@@ -14,7 +14,6 @@ const getProfile = (req, res) => {
       obj.createdAt = moment(obj.createdAt).utc('+7').format('YYYY');
       return obj;
     });
-    console.log(processedResult);
     if (results.length > 0) {
       return response(res, `User profile with ID: ${id}`, results[0], null);
     } else {
