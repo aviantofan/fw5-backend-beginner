@@ -265,6 +265,7 @@ exports.patchVehicle = (req, res) => {
                         if (o.image !== null) {
                           o.image = `${CLOUD_URL}/${o.image}`;
                         }
+                        o.reservationBefore = moment(o.reservationBefore, 'HH:mm:ss').format('HH:mm');
                         return o;
                       });
                       return response(res, 'Updated data vehicle success!', mapResults[0], null);
