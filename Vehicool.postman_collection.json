@@ -61,12 +61,12 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "aviantofan@gmail.com",
+									"value": "roki@mail.com",
 									"type": "default"
 								},
 								{
 									"key": "password",
-									"value": "@Popcorn14",
+									"value": "Akuanak123@",
 									"type": "default"
 								}
 							]
@@ -161,11 +161,11 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/C:/Users/eexxprd/Downloads/Tofan.jpg"
+									"src": []
 								},
 								{
 									"key": "name",
-									"value": "fixxxxxx",
+									"value": "fix",
 									"type": "default"
 								},
 								{
@@ -204,17 +204,12 @@
 									"type": "default"
 								},
 								{
-									"key": "paymentMethod",
-									"value": "Cash",
-									"type": "default"
-								},
-								{
 									"key": "price",
 									"value": "25000",
 									"type": "default"
 								},
 								{
-									"key": "stock",
+									"key": "qty",
 									"value": "15",
 									"type": "default"
 								}
@@ -249,7 +244,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "35"
+									"value": "3"
 								}
 							]
 						}
@@ -262,7 +257,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/vehicles?page=1&limit=4&sort&order",
+							"raw": "{{baseURL}}/vehicles?page=1&limit=4",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -281,25 +276,12 @@
 									"disabled": true
 								},
 								{
-									"key": "paymentMethod",
-									"value": "excash",
-									"disabled": true
-								},
-								{
 									"key": "page",
 									"value": "1"
 								},
 								{
 									"key": "limit",
 									"value": "4"
-								},
-								{
-									"key": "sort",
-									"value": null
-								},
-								{
-									"key": "order",
-									"value": null
 								}
 							]
 						}
@@ -400,9 +382,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{deployURL}}/vehicles/:id",
+							"raw": "{{baseURL}}/vehicles/:id",
 							"host": [
-								"{{deployURL}}"
+								"{{baseURL}}"
 							],
 							"path": [
 								"vehicles",
@@ -595,7 +577,8 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/E:/tofan.jpg"
+									"src": [],
+									"disabled": true
 								},
 								{
 									"key": "name",
@@ -630,8 +613,7 @@
 								{
 									"key": "phone",
 									"value": "09098877866",
-									"type": "default",
-									"disabled": true
+									"type": "default"
 								},
 								{
 									"key": "birthdate",
@@ -710,6 +692,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GET PROFILE",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
@@ -747,16 +737,6 @@
 								{
 									"key": "prepayment",
 									"value": "100000",
-									"type": "default"
-								},
-								{
-									"key": "methodPayment",
-									"value": "",
-									"type": "default"
-								},
-								{
-									"key": "qty",
-									"value": "",
 									"type": "default"
 								},
 								{
@@ -984,7 +964,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/categories?name&page=1&limit=3",
+							"raw": "{{baseURL}}/categories?name&page=1&limit=3&order=",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1003,6 +983,15 @@
 								{
 									"key": "limit",
 									"value": "3"
+								},
+								{
+									"key": "sort",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": ""
 								}
 							]
 						}

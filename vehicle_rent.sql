@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2022 at 10:26 AM
+-- Generation Time: May 10, 2022 at 10:06 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -103,7 +103,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `image`, `name`, `email`, `username`, `role`, `password`, `gender`, `address`, `phone`, `birthdate`, `createdAt`, `updatedAt`) VALUES
-(1, NULL, 'Admin', 'aviantofan@gmail.com', '', 'admin', '$2b$10$..jrBU05OBcI5gNRjfbt9e7aGt177bGNN6UyTy0AIjBOxLW..rkMa', NULL, '', '', '0000-00-00', '2022-04-20 15:09:50', '2022-04-20 15:10:17');
+(1, 'vehicool/uploads/Axn_aGeDZg-1652166748797', 'Admin', 'admin@mail.com', 'Admin', 'admin', '$2b$10$fvi/4uAO7AXNtZ./e.A2getiT9/bi2fKUsBaCXlf2211giZJI4L3a', 'Male', 'Admin Routes', '088877775555', '2022-05-10', '2022-05-10 14:07:58', '2022-05-10 14:12:59');
 
 -- --------------------------------------------------------
 
@@ -118,12 +118,13 @@ CREATE TABLE `vehicles` (
   `color` varchar(35) NOT NULL,
   `loc` varchar(35) NOT NULL,
   `isAvailable` tinyint(1) NOT NULL,
-  `isPrepay` tinyint(1) NOT NULL,
+  `isPrepay` tinyint(1) NOT NULL DEFAULT 0,
   `capacity` int(11) NOT NULL,
   `categoryId` int(11) DEFAULT NULL,
   `reservationBefore` time NOT NULL,
+  `paymentMethod` enum('Cash','Transfer','Excash') NOT NULL DEFAULT 'Cash',
   `price` int(11) NOT NULL,
-  `qty` int(11) NOT NULL,
+  `stock` int(11) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `updatedAt` datetime DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -132,20 +133,15 @@ CREATE TABLE `vehicles` (
 -- Dumping data for table `vehicles`
 --
 
-INSERT INTO `vehicles` (`id`, `image`, `name`, `color`, `loc`, `isAvailable`, `isPrepay`, `capacity`, `categoryId`, `reservationBefore`, `price`, `qty`, `createdAt`, `updatedAt`) VALUES
-(1, 'uploads\\merapi-1645708427883-330171527.png', 'Van', 'Orange', 'Yogyakarta', 1, 0, 6, 1, '12:00:00', 130000, 14, '2022-02-24 20:13:47', NULL),
-(2, 'uploads\\lambo-1645708496375-953593192.png', 'Lamborghini', 'Orange', 'South Jakarta', 1, 0, 2, 1, '12:00:00', 245000, 14, '2022-02-24 20:14:56', '2022-03-06 15:04:38'),
-(3, 'uploads\\bromo-1645708560193-959532897.png', 'Jeep', 'Cream', 'Malang', 1, 0, 2, 1, '12:00:00', 120000, 14, '2022-02-24 20:16:00', NULL),
-(4, 'uploads\\jeep-white-1645708597802-547812766.png', 'Jeep White', 'White', 'Kalimantan', 1, 0, 2, 1, '12:00:00', 150000, 14, '2022-02-24 20:16:37', NULL),
-(5, 'uploads\\vespa-1645708639078-395984186.png', 'Vespa', 'White', 'Yogyakarta', 1, 0, 2, 2, '12:00:00', 170000, 14, '2022-02-24 20:17:19', '2022-02-24 20:22:12'),
-(6, 'uploads\\teluk-bogam-1645708684045-579324185.png', 'Honda KLX', 'Silver', 'Kalimantan', 1, 0, 2, 2, '12:00:00', 100000, 14, '2022-02-24 20:18:04', '2022-02-24 20:21:59'),
-(7, 'uploads\\honda-1645708750191-405871581.png', 'Honda', 'Black', 'Malang', 1, 0, 2, 2, '12:00:00', 50000, 14, '2022-02-24 20:19:10', '2022-02-24 20:21:41'),
-(8, 'uploads\\malioboro-1645708793665-507373267.png', 'Matic Bike', 'Black', 'Yogyakarta', 1, 0, 2, 2, '12:00:00', 25000, 14, '2022-02-24 20:19:53', '2022-02-24 20:21:29'),
-(9, 'uploads\\fixie-1645708835113-266981439.png', 'Fixie', 'Black', 'Yogyakarta', 1, 0, 1, 3, '12:00:00', 10000, 14, '2022-02-24 20:20:35', NULL),
-(10, 'uploads\\sports-1645708995652-74532490.png', 'Sport Bike', 'Silver', 'Kalimantan', 1, 0, 1, 3, '12:00:00', 25000, 14, '2022-02-24 20:23:15', NULL),
-(11, 'uploads\\onthel-1645709036747-872500364.png', 'Onthel', 'Blue', 'Malang', 1, 0, 1, 3, '12:00:00', 25000, 14, '2022-02-24 20:23:56', NULL),
-(22, NULL, 'Fixie White', 'White', 'Yogyakarta', 1, 0, 1, 3, '12:00:00', 25000, 14, '2022-04-16 23:45:39', NULL),
-(23, NULL, 'fix', 'White', 'Yogyakarta', 0, 0, 1, 3, '12:00:00', 25000, 15, '2022-04-16 23:54:47', NULL);
+INSERT INTO `vehicles` (`id`, `image`, `name`, `color`, `loc`, `isAvailable`, `isPrepay`, `capacity`, `categoryId`, `reservationBefore`, `paymentMethod`, `price`, `stock`, `createdAt`, `updatedAt`) VALUES
+(1, 'vehicool/uploads/u4Qn1xW4NB-1652169442990', 'Lamborghini', 'Orange', 'South Jakarta', 1, 0, 2, 1, '13:00:00', 'Cash', 1500000, 10, '2022-05-10 14:57:25', '2022-05-10 15:00:04'),
+(2, 'vehicool/uploads/FRfSae0P88-1652169490971', 'Jeep', 'White', 'Yogyakarta', 1, 0, 4, 1, '12:00:00', 'Transfer', 120000, 15, '2022-05-10 14:58:13', '2022-05-10 15:00:36'),
+(3, 'vehicool/uploads/uJ3NHg4wPq-1652169549066', 'Jeep', 'Cream', 'Kalimantan', 1, 0, 1, 1, '13:00:00', 'Cash', 245000, 5, '2022-05-10 14:59:11', NULL),
+(4, 'vehicool/uploads/bwABiZAU0K-1652169694119', 'Van', 'Green', 'Yogyakarta', 1, 0, 6, 1, '13:00:00', 'Cash', 120000, 5, '2022-05-10 15:01:37', NULL),
+(5, 'vehicool/uploads/-UQMEkCLMg-1652169770521', 'Cafe Racer', 'Black', 'South Jakarta', 1, 0, 2, 2, '15:00:00', 'Cash', 250000, 15, '2022-05-10 15:02:53', '2022-05-10 15:05:05'),
+(6, 'vehicool/uploads/yBQ3c4pogO-1652169820318', 'Vario', 'Black', 'Yogyakarta', 1, 0, 2, 2, '12:00:00', 'Transfer', 100000, 20, '2022-05-10 15:03:43', '2022-05-10 15:04:51'),
+(7, 'vehicool/uploads/UcwJiBBlYg-1652169875823', 'Fixie', 'Silver', 'South Jakarta', 1, 0, 1, 3, '13:00:00', 'Cash', 25000, 5, '2022-05-10 15:04:38', NULL),
+(8, 'vehicool/uploads/SaDkMDkVKg-1652169969512', 'Onthel', 'Silver', 'Kalimantan', 1, 0, 1, 3, '13:00:00', 'Cash', 10000, 30, '2022-05-10 15:06:12', NULL);
 
 --
 -- Indexes for dumped tables
@@ -219,7 +215,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `vehicles`
 --
 ALTER TABLE `vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
