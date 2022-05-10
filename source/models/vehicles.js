@@ -36,7 +36,7 @@ exports.getVehicle = (id, cb) => {
 };
 
 exports.getVehiclesCategory = (fin, cb) => {
-  db.query(`SELECT v.id, v.image, v.name, v.loc FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE c.id LIKE '%${fin.categoryId}%' LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
+  db.query(`SELECT v.id, v.image, v.name, v.loc FROM vehicles v LEFT JOIN categories c ON v.categoryId=c.id WHERE v.name LIKE '%${fin.name}%' AND v.loc LIKE '%${fin.location}%' AND c.id LIKE '%${fin.categoryId}%' ORDER BY ${fin.sort} ${fin.order} LIMIT ${fin.limit} OFFSET ${fin.offset}`, (err, res) => {
     if (err) throw err;
     cb(res);
   });

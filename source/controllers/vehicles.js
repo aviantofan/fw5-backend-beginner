@@ -177,15 +177,17 @@ exports.getVehicles = (req, res) => {
 };
 
 exports.getVehiclesCategory = (req, res) => {
-  let { name, location,  paymentMethod, categoryId, page, limit } = req.query;
+  let { name, location,  paymentMethod, categoryId, sort, order, page, limit } = req.query;
   name = name || '';
   location = location || '';
   paymentMethod = paymentMethod || '';
   categoryId = categoryId || '';
+  sort = sort || 'v.createdAt';
+  order = order || 'desc';
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 5;
   const offset = (page - 1) * limit;
-  const fin = { name, location, paymentMethod, categoryId, page, limit, offset };
+  const fin = { name, location, paymentMethod, categoryId, sort, order, page, limit, offset };
   vehicleModel.getVehiclesCategory(fin, results => {
     results.map((obj) => {
       if (obj.image !== null) {

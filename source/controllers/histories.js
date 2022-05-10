@@ -11,8 +11,6 @@ exports.postHistory = (req, res) => {
     rentStartDate: req.body.rentStartDate,
     rentEndDate: req.body.rentEndDate,
     prepayment: req.body.prepayment,
-    methodPayment: req.body.methodPayment,
-    qty: req.body.qty,
     isReturned: req.body.isReturned
   };
   if (validator.isEmpty(data.userId)) {
@@ -30,12 +28,6 @@ exports.postHistory = (req, res) => {
   if (validator.isEmpty(data.prepayment)) {
     return response(res, 'Prepayment cannot empty!', null, null, 400);
   }
-  if (validator.isEmpty(data.methodPayment)) {
-    return response(res, 'Method Payment cannot empty!', null, null, 400);
-  }
-  if (validator.isEmpty(data.qty)) {
-    return response(res, 'Quantity cannot empty!', null, null, 400);
-  }
   if (validator.isEmpty(data.isReturned)) {
     return response(res, 'Is Returned cannot empty!', null, null, 400);
   }
@@ -44,22 +36,18 @@ exports.postHistory = (req, res) => {
       if (validator.isDate(data.rentStartDate)) {
         if (validator.isDate(data.rentEndDate)) {
           if (validator.isInt(data.prepayment)) {
-            if (validator.isInt(data.qty)) {
-              if (validator.isInt(data.isReturned)) {
-                historyModel.postHistory(data, (results => {
-                  if (results.affectedRows == 1) {
-                    historyModel.getHistory(results.insertId, (temp) => {
-                      return response(res, 'Input data history success!', temp[0], null);
-                    });
-                  } else {
-                    return response(res, 'Input data history failed!', null, null, 500);
-                  }
-                }));
-              } else {
-                return response(res, 'Invalid input, Is Returned must be number!', null, null, 400);
-              }
+            if (validator.isInt(data.isReturned)) {
+              historyModel.postHistory(data, (results => {
+                if (results.affectedRows == 1) {
+                  historyModel.getHistory(results.insertId, (temp) => {
+                    return response(res, 'Input data history success!', temp[0], null);
+                  });
+                } else {
+                  return response(res, 'Input data history failed!', null, null, 500);
+                }
+              }));
             } else {
-              return response(res, 'Invalid input, Quantity must be number!', null, null, 400);
+              return response(res, 'Invalid input, Is Returned must be number!', null, null, 400);
             }
           } else {
             return response(res, 'Invalid input, Prepayment must be number!', null, null, 400);
