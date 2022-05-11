@@ -15,7 +15,7 @@ exports.getHistories = (fin, cb) => {
 };
 
 exports.getHistory = (id, cb) => {
-  db.query('SELECT h.id, h.userId, v.image, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.prepayment, h.methodPayment, h.isReturned  FROM histories h LEFT JOIN users u ON h.userId = u.id LEFT JOIN vehicles v ON h.vehicleId = V.id WHERE h.userId=?', [id], (err, res) => {
+  db.query('SELECT h.id, h.userId, v.image, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.prepayment, h.isReturned  FROM histories h LEFT JOIN users u ON h.userId = u.id LEFT JOIN vehicles v ON h.vehicleId = V.id WHERE h.userId=?', [id], (err, res) => {
     if (err) throw err;
     cb(res);
   });
