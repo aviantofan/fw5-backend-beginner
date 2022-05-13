@@ -74,7 +74,7 @@ exports.register = async (req, res) => {
           return res.status(500).send(res, 'Register Failed!', null, null);
         }
       } else {
-        return res.status(400).send(res, 'Username or email already used!', null, null);
+        return response(res, 'Username or email already used!', null, null, 400);
       }
     } else {
       return response(res, 'Your password must have 6 characters includes Uppercase, Lowercase, Number, and symbol', null, null, 400);

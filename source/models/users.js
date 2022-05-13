@@ -28,7 +28,6 @@ exports.getUserCheck = (data) => new Promise((resolve, reject) => {
   });
 });
 
-
 // exports.postUser = (data, cb) =>{
 //     db.query('INSERT INTO users SET ?', data, (err, res) => {
 //         if(err) throw err;
@@ -75,7 +74,7 @@ exports.deleteUser = (id, cb) => {
 };
 
 exports.register = (data) => new Promise((resolve, reject) => {
-  db.query(`INSERT INTO users (name, email, password) VALUES ('${data.name}', '${data.email}', '${data.password}')`,
+  db.query(`INSERT INTO users (name, username, email, password) VALUES ('${data.name}', '${data.username}', '${data.email}', '${data.password}')`,
     (err, res) => {
       if (err) reject(err);
       resolve(res);
