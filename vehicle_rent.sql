@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 10, 2022 at 10:06 AM
+-- Generation Time: May 13, 2022 at 06:36 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -103,7 +103,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `image`, `name`, `email`, `username`, `role`, `password`, `gender`, `address`, `phone`, `birthdate`, `createdAt`, `updatedAt`) VALUES
-(1, 'vehicool/uploads/Axn_aGeDZg-1652166748797', 'Admin', 'admin@mail.com', 'Admin', 'admin', '$2b$10$fvi/4uAO7AXNtZ./e.A2getiT9/bi2fKUsBaCXlf2211giZJI4L3a', 'Male', 'Admin Routes', '088877775555', '2022-05-10', '2022-05-10 14:07:58', '2022-05-10 14:12:59');
+(1, NULL, 'Admin', 'admin@mail.com', 'admin', 'admin', '$2b$10$jLUfQyARjQ08KXjWen8L7eu8b2p1aYxKLfY4SkeVPJt9Fs5gdXloa', NULL, '', '', '0000-00-00', '2022-05-13 17:13:46', '2022-05-13 23:35:16');
 
 -- --------------------------------------------------------
 
@@ -141,7 +141,10 @@ INSERT INTO `vehicles` (`id`, `image`, `name`, `color`, `loc`, `isAvailable`, `i
 (5, 'vehicool/uploads/-UQMEkCLMg-1652169770521', 'Cafe Racer', 'Black', 'South Jakarta', 1, 0, 2, 2, '15:00:00', 'Cash', 250000, 15, '2022-05-10 15:02:53', '2022-05-10 15:05:05'),
 (6, 'vehicool/uploads/yBQ3c4pogO-1652169820318', 'Vario', 'Black', 'Yogyakarta', 1, 0, 2, 2, '12:00:00', 'Transfer', 100000, 20, '2022-05-10 15:03:43', '2022-05-10 15:04:51'),
 (7, 'vehicool/uploads/UcwJiBBlYg-1652169875823', 'Fixie', 'Silver', 'South Jakarta', 1, 0, 1, 3, '13:00:00', 'Cash', 25000, 5, '2022-05-10 15:04:38', NULL),
-(8, 'vehicool/uploads/SaDkMDkVKg-1652169969512', 'Onthel', 'Silver', 'Kalimantan', 1, 0, 1, 3, '13:00:00', 'Cash', 10000, 30, '2022-05-10 15:06:12', NULL);
+(8, 'vehicool/uploads/SaDkMDkVKg-1652169969512', 'Onthel', 'Silver', 'Kalimantan', 1, 0, 1, 3, '13:00:00', 'Cash', 10000, 30, '2022-05-10 15:06:12', NULL),
+(9, 'vehicool/uploads/uKG-TK1xBI-1652320764720', 'Vespa', 'White', 'South Jakarta', 1, 0, 2, 2, '10:00:00', 'Transfer', 100000, 20, '2022-05-12 08:59:27', NULL),
+(10, 'vehicool/uploads/aCu5ZGmmqz-1652320904437', 'KLX', 'Black White', 'Kalimantan', 1, 0, 2, 2, '12:00:00', 'Cash', 200000, 26, '2022-05-12 09:01:47', NULL),
+(11, 'vehicool/uploads/pdJgWTlOJM-1652320966017', 'Mountain Bike', 'White', 'Yogyakarta', 1, 0, 1, 3, '15:00:00', 'Cash', 80000, 10, '2022-05-12 09:02:48', NULL);
 
 --
 -- Indexes for dumped tables
@@ -215,7 +218,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `vehicles`
 --
 ALTER TABLE `vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
